@@ -10,3 +10,24 @@ TML addresses the needs of typographers, authors, writers that need a little mor
 
 Heavily inspired by Peter Schaffter's tremendous work and uses his [MOM macros](www.schaffter.ca/mom/mom-01.html) for groff.
 
+## How do I use it?
+
+Well, first you will need to have Peter Schaffter's MOM macros installed [MOM macros](www.schaffter.ca/mom/mom-01.html).
+
+Then you can run:
+
+`perl tml2mom.pl showcase.tml`
+
+This will spit stuff out on the screen. If you want the output to be saved to a file, do:
+
+`perl tml2mom.pl showcase.tml > showcase.mom`
+
+Finally, if you want to turn the resulting .mom file into a pdf:
+
+`pdfmom showcase.mom > showcase.pdf`
+
+## Some final notes
+
+1. I am not really a programmer, this is all one big experiment. If you can improve on my code...please do!
+2. This is still just a prototype...use at your own risk!
+3. Don't feed tha manimals.
