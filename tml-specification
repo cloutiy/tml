@@ -1,4 +1,4 @@
-(TML Specification v.1.0)
+(TML Specification v.1.01)
 
 # PAGE LAYOUT
 ## Page sizes by name
@@ -141,6 +141,11 @@
 # LANGUAGE
 {language:spanish} => (not implemented yet) maybe make it so that language also determines hyphenation language automatically.
 
+# PRINT STYLE
+{typeset}
+{typewriter}
+{typewriter:singlespace}
+
 ## METADATA TAGS
 [author]
 [title]
@@ -152,7 +157,6 @@
 [covertitle]
 [doccovertitle]
 [pdftitle]
-[printstyle]
 
 ## DOCUMENT ELEMENT TAGS
 [include] path-to-external-file.xxx
@@ -201,6 +205,7 @@
 <+n<...>
 <-n<...>
 <n<...>
+<size n<...>
 
 <bold<...> / <bld<...> / <b<...>
 <italic<...> / <it<...> / <i<...>
@@ -216,79 +221,79 @@
 # => the # symbol denotes a comment.  replaced with \#
 
 ## SPECIAL CHARS
-[en] / .. - .. 
-[em] / ..--.. 
+|en| / .. - .. 
+|em| / ..--.. 
 
 ### Plus/minus (arithmetic) \[+-] 
-[+/-]
+|+/-|
 
 ### Subtract (arithmetic) \[mi]
-[-]
+|-|
 
 ### Multiply (arithmetic) \[mu]
-[x]
+|x|
 
 ### Divide (arithmetic) \[di]
-[/]  
+|/| 
 
 ### Left double-quote \[lq] 
-[lq]
+|lq|
 
 ### Right double-quote \[rq]
-[rq]
+|rq|
 
 ### Open (left) single-quote \[oq]
-[oq]
+|oq|
 
 ### Close (right) single-quote \[oq]
-[oq]
+|oq|
 
 ### Bullet \[bu] 
-[bu] / [bullet]
+|bu| / [bullet]
 
 ### Ballot box \[sq]
-[sq]
-[square]
+|sq|
+|square|
 
 ### One-quarter \[14] 
-[1/4]
+|1/4|
 
 ### One-half \[12] 
-[1/2]
+|1/2|
 
 ### Three-quarters \[34] 
-[3/4]
+|3/4|
 
 ### Degree sign \[de] 
-[de] / [deg] / [degree]
+|de| / [deg] / [degree]
 
 ### Dagger \[dg] 
-[dg] / [dagger]
+|dg| / [dagger]
 
 ### Foot mark \[fm] 
-[fm] / [footmark]
+|fm| / [footmark]
 
 ### Cent sign \[ct] 
-[ct] /[cent]
+|ct| /[cent]
 
 ### Registered trademark \[rg] 
-[rg] /[trademark]
+|rg| / |tm| / [trademark]
 
 ### Copyright \[co] 
-[co] / [copyright]
+|co| / [copyright]
 
 ### Section symbol \[se]
-[se] 
+|se] 
 
 ### Foot and Inch \[foot] \[inch]
-[']
-["]
+|'|
+|"|
 
 ### Braces and brackets (curly, square and greater/less than symbols have special significance in TML. enclosing them within [] treats them as tags
-[{] / [lc]
-[}] / [rc] 
-[<] / [lt] 
-[>] / [gt] 
-[[] / [ls] 
-[]] / [rs] 
+|{| / |lc|
+|}| / |rc| 
+|<| / |lt| 
+|>| / |gt| 
+|[| / |ls| 
+|]| / |rs| 
 
