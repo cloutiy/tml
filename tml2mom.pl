@@ -1,12 +1,24 @@
-# V. 1.0
+# V. 1.01
 # Release notes:
-# - String for Metadata and heading titles must be enclosed in quotes.  Will fix that later.
-# - Should not have spaces in element blocks [...] or [...:...]
-
-# TODO:
-# 1) Add &\ before period after footnote/endnote
-# 2) Add .ENDNOTES at end of doc if endnotes are used.
-
+# Fixed
+#~~~~~~~
+# \*[BLD] => \*[BD]
+#
+#
+# Added
+#~~~~~~~
+# - Added <size n<...> command
+# - [chapter] => .CHAPTER_TITLE / [section] => .HEADING 1 / [subsection] => .HEADING 2
+# - Special chars are now denoted by |char| instead of [char].  Ex: 350|degrees|F   /  1|3/4| cups
+# - {typeset}, {typewriter}, {typewriter:singlespace}
+#
+# Todo
+#~~~~~
+# - modify regular expressions to allow spaces and or hyphens in {...}, [....] and <...<
+# - add {align:left|right|center} for non-filling alignment of text
+# - add synonyms for {justification:...} => {justify:...} and {quad:...}
+# - make {typeset} default unless {typeset} is specified
+#
 #:::::::::::::::::: VARIABLES ::::::::::::::::::
 @elementStack=();	#Keeps track of what the current element tag is
 $hasEndnotes="";	#If we use [endnote], .ENDNOTES must be added at the end of the document
@@ -23,6 +35,7 @@ close(FILE);
 foreach $_ (@tmlfile){
 	includeFiles();
 	replaceMetadata();
+	replacePrintStyle();
 	replacePageLayout();
 	replaceFonts();
 	replaceMargins();
@@ -39,6 +52,7 @@ foreach $_ (@tmlfile){
 	replaceEpigraphBlock();
 	replaceSection();
 	replaceSubsection();
+	replaceSubsubsection();
 	replaceBlockquote();
 	replaceQuote();
 	replaceList();
@@ -48,9 +62,9 @@ foreach $_ (@tmlfile){
 	replaceFootnote();
 	replaceEndnote();
 	replaceStartFinis();
-	replaceBoldItalic();
-	replaceItalic();
-	replaceBold();
+#	replaceBoldItalic();
+#	replaceItalic();
+#	replaceBold();
 	replaceEnDash();
 	replaceEmDash();
 	replaceEllipses();
@@ -95,6 +109,14 @@ sub replaceMetadata {
 		$_ =~ s/\[pdftitle\](.*?)/\.PDF_TITLE $1/;
 		$_ =~ s/\[printstyle\](.*?)/\.PRINTSTYLE $1/;
 }
+
+sub replacePrintStyle{
+	$_ =~ s/{typeset}/\.PRINTSTYLE TYPESET/;
+	$_ =~ s/{typewrite}/\.PRINTSTYLE TYPEWRITE/;
+	$_ =~ s/{typewrite:singlespace}/\.PRINTSTYLE TYPEWRITE SINGLESPACE/;
+
+}
+
 sub replacePageLayout{
 		#TODO: Implement user defined sizes
 		#:: Page sizes by name
@@ -156,6 +178,8 @@ sub replaceMargins{
 		$_ =~ s/{marginbottom:(.*?)}/\.B_MARGIN $1/;
 		$_ =~ s/{margins:(.*?)\s(.*?)\s(.*?)\s(.*?)}/\.L_MARGIN $1\n\.R_MARGIN $2\n\.T_MARGIN $3\n\.B_MARGIN $4/;
 }
+
+
 sub replaceFonts{
 		#{fontfamily:}
 		$_ =~ s/{fontfamily:avant-garde}/\.FAMILY A/;
@@ -235,8 +259,8 @@ sub replaceKerning{
 
 }
 sub replaceLigatures{
-#{ligatures:on}
-#{ligatures:off}
+	#{ligatures:on}
+	#{ligatures:off}
 	$_ =~ s/{ligatures:on}/\.LIG/;	
 	$_ =~ s/{ligatures:off}/\.LIG OFF/;
 }
@@ -256,13 +280,13 @@ sub replaceHyphenation{
 	
 	#{hyphenationlanguage:spanish}
 	#{hyphenationmax:}
-	$_ =~ s/{hyphenationmax:(.*?)}/\.HY $1/;	
+	$_ =~ s/{hyphenationmaxlines:(.*?)}/\.HY LINES $1/;	
 	
 	#{hyphenationmargin:}
-	$_ =~ s/{hyphenationmargin:(.*?)}/\.HY $1/;
+	$_ =~ s/{hyphenationmargin:(.*?)}/\.HY MARGIN $1/;
 	
 	#{hyphenationspace:}
-	$_ =~ s/{hyphenationspace:(.*?)}/\.HY $1/;
+	$_ =~ s/{hyphenationspace:(.*?)}/\.HY SPACE $1/;
 	
 	#{hyphenation:reset}
 	$_ =~ s/{hyphenation:reset}/\.HY DEFAULT/;
@@ -294,7 +318,7 @@ sub replaceSmartquotes{
 
 sub replaceToc{
 		if ($_ =~ s/\[tableofcontents\]//){
-		   $hasToc = "true";print "Has toc\n";
+		   $hasToc = "true";
 		}
 }
 sub replaceEpigraph {
@@ -310,24 +334,29 @@ sub replaceEpigraphBlock {
 }
 
 sub replaceChapter {
-		$_ =~ s/\[chapter\]/\.HEADING 1/;
-		$_ =~ s/\[chap\]/\.HEADING 1/;
-		$_ =~ s/\[heading1\]/\.HEADING 1/;
-		$_ =~ s/\[heading 1\]/\.HEADING 1/;
-		$_ =~ s/\[h1\]/\.HEADING 1/;
+		$_ =~ s/\[chapter\]/\.CHAPTER_TITLE/;
+		$_ =~ s/\[chap\]/\.CHAPTER/;
 }
 
 sub replaceSection {
-		$_ =~ s/\[section\]/\.HEADING 2/;
-		$_ =~ s/\[sec\]/\.HEADING 2/;
-		$_ =~ s/\[heading 2\]/\.HEADING 2/;
-		$_ =~ s/\[heading2\]/\.HEADING 2/;
-		$_ =~ s/\[h2\]/\.HEADING 2/;
+		$_ =~ s/\[section\]/\.HEADING 1/;
+		$_ =~ s/\[sec\]/\.HEADING 1/;
+		$_ =~ s/\[heading 1\]/\.HEADING 1/;
+		$_ =~ s/\[heading1\]/\.HEADING 1/;
+		$_ =~ s/\[h1\]/\.HEADING 1/;
 }
 
 sub replaceSubsection {
-		$_ =~ s/\[subsection\]/\.HEADING 3/;
-		$_ =~ s/\[subsec\]/\.HEADING 3/;
+		$_ =~ s/\[subsection\]/\.HEADING 2/;
+		$_ =~ s/\[subsec\]/\.HEADING 2/;
+		$_ =~ s/\[heading2\]/\.HEADING 2/;
+		$_ =~ s/\[heading 2\]/\.HEADING 2/;
+		$_ =~ s/\[h2\]/\.HEADING 2/;
+}
+
+sub replaceSubsubsection {
+		$_ =~ s/\[subsubsection\]/\.HEADING 3/;
+		$_ =~ s/\[subsubsec\]/\.HEADING 3/;
 		$_ =~ s/\[heading3\]/\.HEADING 3/;
 		$_ =~ s/\[heading 3\]/\.HEADING 3/;
 		$_ =~ s/\[h3\]/\.HEADING 3/;
@@ -444,70 +473,72 @@ sub replaceEmDash(){
 
 sub replaceSpecialChars{
  # Plus/minus (arithmetic) \[+-] 
- $_ =~ s/\[\+\/-\]/\\[\+-\]/g; 
+ $_ =~ s/\|\+\/-\|/\\[\+-\]/g; 
  # Subtract (arithmetic) \[mi]
-  $_ =~ s/\[-\]/\\[mi\]/g; 
+  $_ =~ s/\|-\|/\\[mi\]/g; 
  # Multiply (arithmetic) \[mu]
-  $_ =~ s/\[x\]/\\[mu\]/g; 
+  $_ =~ s/\|x\|/\\[mu\]/g; 
  # Divide (arithmetic) \[di]
-  $_ =~ s/\[\/\]/\\[di\]/g;  
+  $_ =~ s/\|\/\}/\\[di\]/g;  
  # Left double-quote \[lq] 
-  $_ =~ s/\[lq\]/\\[lq\]/g; 
+  $_ =~ s/\|lq\|/\\[lq\]/g; 
  # Right double-quote \[rq]
-  $_ =~ s/\[rq\]/\\[rq\]/g; 
+  $_ =~ s/\|rq\|/\\[rq\]/g; 
  # Open (left) single-quote \[oq]
-  $_ =~ s/\[oq\]/\\[oq\]/g; 
+  $_ =~ s/\|oq\|/\\[oq\]/g; 
  # Close (right) single-quote \[oq]
-  $_ =~ s/\[oq\]/\\[oq\]/g; 
+  $_ =~ s/\|oq\|/\\[oq\]/g; 
  # Bullet \[bu] 
-  $_ =~ s/\[bu]/\\[bu\]/g; 
-  $_ =~ s/\[bullet]/\\[bu\]/g; 
+  $_ =~ s/\|bu\|/\\[bu\]/g; 
+  $_ =~ s/\|bullet\|/\\[bu\]/g; 
  #Ballot box \[sq]
-  $_ =~ s/\[sq]/\\[sq\]/g; 
-  $_ =~ s/\[square]/\\[sq\]/g; 
+  $_ =~ s/\|sq\|/\\[sq\]/g; 
+  $_ =~ s/\|square\|/\\[sq\]/g; 
  # One-quarter \[14] 
-  $_ =~ s/\[1\/4\]/\\[14\]/g; 
+  $_ =~ s/\|1\/4\|/\\[14\]/g; 
  # One-half \[12] 
-  $_ =~ s/\[1\/2\]/\\[12\]/g; 
+  $_ =~ s/\|1\/2\|/\\[12\]/g; 
  # Three-quarters \[34] 
-  $_ =~ s/\[3\/4\]/\\[34\]/g; 
+  $_ =~ s/\|3\/4\|/\\[34\]/g; 
  # Degree sign \[de] 
-  $_ =~ s/\[de\]/\\[de\]/g; 
-  $_ =~ s/\[deg\]/\\[de\]/g;
-  $_ =~ s/\[degree\]/\\[de\]/g; 
+  $_ =~ s/\|de\|/\\[de\]/g; 
+  $_ =~ s/\|deg\|/\\[de\]/g;
+  $_ =~ s/\|degree\|/\\[de\]/g; 
+  $_ =~ s/\|degrees\|/\\[de\]/g; 
  # Dagger \[dg] 
-  $_ =~ s/\[dg\]/\\[dg\]/g; 
-  $_ =~ s/\[dagger\]/\\[dg\]/g; 
+  $_ =~ s/\|dg\|/\\[dg\]/g; 
+  $_ =~ s/\|dagger\|/\\[dg\]/g; 
  # Foot mark \[fm] 
-  $_ =~ s/\[fm\]/\\[fm\]/g; 
-  $_ =~ s/\[footmark\]/\\[fm\]/g; 
+  $_ =~ s/\|fm\|/\\[fm\]/g; 
+  $_ =~ s/\|footmark\|/\\[fm\]/g; 
  # Cent sign \[ct] 
-  $_ =~ s/\[ct\]/\\[ct\]/g; 
+  $_ =~ s/\|ct\|/\\[ct\]/g; 
   $_ =~ s/\[cent\]/\\[ct\]/g; 
  # Registered trademark \[rg] 
-  $_ =~ s/\[rg\]/\\[rg\]/g; 
-  $_ =~ s/\[trademark\]/\\[rg\]/g; 
+  $_ =~ s/\|rg\|/\\[rg\]/g; 
+  $_ =~ s/\|tm\|/\\[rg\]/g; 
+  $_ =~ s/\|trademark\|/\\[rg\]/g; 
  # Copyright \[co] 
-  $_ =~ s/\[co\]/\\[co\]/g;
-  $_ =~ s/\[copyright\]/\\[co\]/g;
+  $_ =~ s/\|co\|/\\[co\]/g;
+  $_ =~ s/\|copyright\|/\\[co\]/g;
  # Section symbol \[se]
-  $_ =~ s/\[se\]/\\[se\]/g; 
+  $_ =~ s/\|se\|/\\[se\]/g; 
  # Foot and inch
- $_ =~ s/\['\]/\\[foot\]/g; 
- $_ =~ s/\["\]/\\[inch\]/g; 
+ $_ =~ s/\|'\|/\\[foot\]/g; 
+ $_ =~ s/\|"\|/\\[inch\]/g; 
  # Braces and brackets
- $_ =~ s/\[{\]/\{/g;
- $_ =~ s/\[lc\]/\{/g;
- $_ =~ s/\[}\]/\}/g; 
- $_ =~ s/\[rc\]/\}/g; 
- $_ =~ s/\[<\]/</g; 
- $_ =~ s/\[lt\]/</g; 
- $_ =~ s/\[>\]/>/g; 
- $_ =~ s/\[gt\]/>/g; 
- $_ =~ s/\[\[\]/\[/g; 
- $_ =~ s/\[ls\]/\[/g; 
- $_ =~ s/\[\]\]/\]/g; 
- $_ =~ s/\[rs\]/\]/g; 
+ $_ =~ s/\|{\|/\{/g;
+ $_ =~ s/\|lc\|/\{/g;
+ $_ =~ s/\|}\|/\}/g; 
+ $_ =~ s/\|rc\|/\}/g; 
+ $_ =~ s/\|<\|/</g; 
+ $_ =~ s/\|lt\|/</g; 
+ $_ =~ s/\|>\|/>/g; 
+ $_ =~ s/\|gt\|/>/g; 
+ $_ =~ s/\|\[\|/\[/g; 
+ $_ =~ s/\|ls\|/\[/g; 
+ $_ =~ s/\|\]\|/\]/g; 
+ $_ =~ s/\|rs\|/\]/g; 
 }
 sub replaceEllipses(){
 		#$_ =~ s/\|\*(.*?)\*\|/\\\*\[BDI\]$1\\\*\[PREV\]/;  
@@ -597,6 +628,12 @@ sub parseCommands(){
 							#print "$openGroup\n"; 
 							push(@closeGroup, "\\*[SIZE]\\*[LC]");
 						}
+						elsif ($command =~ /size/)
+						{
+							$openGroup = $openGroup . "\\*[SIZE $value]"; 
+							#print "$openGroup\n"; 
+							push(@closeGroup, "\\*[SIZE]");
+						}
 						elsif ($command =~ /up/)
 						{
 							$openGroup = $openGroup . "\\*[UP $value]"; 
@@ -642,7 +679,7 @@ sub parseCommands(){
 					{
 						if ($command =~ /bolditalic|bi/ ){ $openGroup = $openGroup . "\\*[BDI]"; push(@closeGroup,"\\*[PREV]");}
 						elsif ($command =~ /italic|it|i/ ){ $openGroup = $openGroup . "\\*[IT]"; push(@closeGroup,"\\*[PREV]");}
-						elsif ($command =~ /bold|bld|b/ ){ $openGroup = $openGroup . "\\*[BLD]"; push(@closeGroup,"\\*[PREV]");}
+						elsif ($command =~ /bold|bld|b/ ){ $openGroup = $openGroup . "\\*[BD]"; push(@closeGroup,"\\*[PREV]");}
 						#elsif ($command =~ /dropcap/){ $openGroup = $openGroup . ".DROPCAP"; push(@closeGroup,"\\*[PREV]");}
 						elsif ($command =~ /smallcaps|sc/){ $openGroup = $openGroup . ".FT SC\n"; push(@closeGroup,"\n.FT\n");}
 						#elsif ($command =~ /condense|cond/){print "<condense>";push(@closeGroup,"</condense>");}
