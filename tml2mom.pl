@@ -1,9 +1,9 @@
-# V. 1.01
+# V. 1.02
 # Release notes:
 # Fixed
 #~~~~~~~
-# \*[BLD] => \*[BD]
-#
+# {typeset} is set as default, unless {typeset} or {typeset:singlespace} is specified => required by MOM
+# [tableofcontents] after start => inserts .AUTO_RELOCATE_TOC before .START as required by MOM to have TOC at beginning.
 #
 # Added
 #~~~~~~~
@@ -31,7 +31,9 @@ open(FILE, $ARGV[0]) || die("Could not open $ARGV[0]\n");
 close(FILE);
 
 #:::::::::::::::::: MAIN PROGRAM ::::::::::::::::
+unshift(@tmlfile, "{typeset}\n");
 # Go through each line of the input file and translate the TML Markup into Groff
+$currentElement = 0;
 foreach $_ (@tmlfile){
 	includeFiles();
 	replaceMetadata();
@@ -77,6 +79,7 @@ foreach $_ (@tmlfile){
 	replaceBreak();
 
 	parseCommands();
+	$currentElement += 1;
 }
 
 	insertEndnotes();
@@ -111,10 +114,16 @@ sub replaceMetadata {
 }
 
 sub replacePrintStyle{
-	$_ =~ s/{typeset}/\.PRINTSTYLE TYPESET/;
-	$_ =~ s/{typewrite}/\.PRINTSTYLE TYPEWRITE/;
-	$_ =~ s/{typewrite:singlespace}/\.PRINTSTYLE TYPEWRITE SINGLESPACE/;
-
+	if ($_ =~ m/{typewrite}/){
+		$tmlfile[0] = ".PRINTSTYLE TYPEWRITE\n";
+		$_ = "#\n";
+	}elsif ($_ =~ m/{typewrite:singlespace/){
+		$tmlfile[0] = ".PRINTSTYLE TYPEWRITE SINGLESPACE\n";
+		$_ = "#\n";
+	}else{
+		$_ =~ s/{typeset}/\.PRINTSTYLE TYPESET/;
+	}
+	
 }
 
 sub replacePageLayout{
@@ -319,6 +328,9 @@ sub replaceSmartquotes{
 sub replaceToc{
 		if ($_ =~ s/\[tableofcontents\]//){
 		   $hasToc = "true";
+		   if ($tmlfile[$currentElement-1] =~ m/\.START/){
+				$tmlfile[$currentElement-1] = ".AUTO_RELOCATE_TOC\n.START\n";
+		   }
 		}
 }
 sub replaceEpigraph {
@@ -679,7 +691,8 @@ sub parseCommands(){
 					{
 						if ($command =~ /bolditalic|bi/ ){ $openGroup = $openGroup . "\\*[BDI]"; push(@closeGroup,"\\*[PREV]");}
 						elsif ($command =~ /italic|it|i/ ){ $openGroup = $openGroup . "\\*[IT]"; push(@closeGroup,"\\*[PREV]");}
-						elsif ($command =~ /bold|bld|b/ ){ $openGroup = $openGroup . "\\*[BD]"; push(@closeGroup,"\\*[PREV]");}
+						elsif ($command =~ /bold|bld|b/ ){ $openGroup = $openGroup . "\\*[CODE]"; push(@closeGroup,"\\*[PREV]");}
+						elsif ($command =~ /monospaced|mono|m/ ){ $openGroup = $openGroup . "\\*[BD]"; push(@closeGroup,"\\*[PREV]");}
 						#elsif ($command =~ /dropcap/){ $openGroup = $openGroup . ".DROPCAP"; push(@closeGroup,"\\*[PREV]");}
 						elsif ($command =~ /smallcaps|sc/){ $openGroup = $openGroup . ".FT SC\n"; push(@closeGroup,"\n.FT\n");}
 						#elsif ($command =~ /condense|cond/){print "<condense>";push(@closeGroup,"</condense>");}
