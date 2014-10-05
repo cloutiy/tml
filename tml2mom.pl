@@ -328,7 +328,7 @@ sub replaceToc{
 		if ($_ =~ s/\[tableofcontents\]//){
 		   $hasToc = "true";
 		   if ($tmlfile[$currentElement-1] =~ m/\.START/){
-				$tmlfile[$currentElement-1] = ".AUTO_RELOCATE_TOC\n.START\n";
+				$tmlfile[$currentElement-1] = ".AUTO_RELOCATE_TOC TOP\n.START\n";
 		   }
 		}
 }
