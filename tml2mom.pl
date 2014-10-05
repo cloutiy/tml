@@ -690,8 +690,8 @@ sub parseCommands(){
 					{
 						if ($command =~ /bolditalic|bi/ ){ $openGroup = $openGroup . "\\*[BDI]"; push(@closeGroup,"\\*[PREV]");}
 						elsif ($command =~ /italic|it|i/ ){ $openGroup = $openGroup . "\\*[IT]"; push(@closeGroup,"\\*[PREV]");}
-						elsif ($command =~ /bold|bld|b/ ){ $openGroup = $openGroup . "\\*[CODE]"; push(@closeGroup,"\\*[PREV]");}
-						elsif ($command =~ /monospaced|mono|m/ ){ $openGroup = $openGroup . "\\*[BD]"; push(@closeGroup,"\\*[PREV]");}
+						elsif ($command =~ /bold|bld|b/ ){ $openGroup = $openGroup . "\\*[BD]"; push(@closeGroup,"\\*[PREV]");}
+						elsif ($command =~ /monospaced|mono|m/ ){ $openGroup = $openGroup . "\\*[CODE]"; push(@closeGroup,"\\*[PREV]");}
 						#elsif ($command =~ /dropcap/){ $openGroup = $openGroup . ".DROPCAP"; push(@closeGroup,"\\*[PREV]");}
 						elsif ($command =~ /smallcaps|sc/){ $openGroup = $openGroup . ".FT SC\n"; push(@closeGroup,"\n.FT\n");}
 						#elsif ($command =~ /condense|cond/){print "<condense>";push(@closeGroup,"</condense>");}
