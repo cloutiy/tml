@@ -2,22 +2,16 @@
 # Release notes:
 # Fixed
 #~~~~~~~
-# {typeset} is set as default, unless {typeset} or {typeset:singlespace} is specified => required by MOM
-# [tableofcontents] after start => inserts .AUTO_RELOCATE_TOC before .START as required by MOM to have TOC at beginning.
 #
 # Added
 #~~~~~~~
-# - Added <size n<...> command
-# - [chapter] => .CHAPTER_TITLE / [section] => .HEADING 1 / [subsection] => .HEADING 2
-# - Special chars are now denoted by |char| instead of [char].  Ex: 350|degrees|F   /  1|3/4| cups
-# - {typeset}, {typewriter}, {typewriter:singlespace}
-#
+# - Inline pairwise kerning: F<-5>or the re<+5>cord.
+
 # Todo
 #~~~~~
 # - modify regular expressions to allow spaces and or hyphens in {...}, [....] and <...<
 # - add {align:left|right|center} for non-filling alignment of text
 # - add synonyms for {justification:...} => {justify:...} and {quad:...}
-# - make {typeset} default unless {typeset} is specified
 #
 #:::::::::::::::::: VARIABLES ::::::::::::::::::
 @elementStack=();	#Keeps track of what the current element tag is
@@ -29,11 +23,11 @@ $hasToc="";			#If we use [tableofcontents], we must insert .TOC at the end of th
 open(FILE, $ARGV[0]) || die("Could not open $ARGV[0]\n");
 @tmlfile = <FILE>;
 close(FILE);
+unshift(@tmlfile, "{typeset}\n");	# Add {typeset} at the start of the document => {typeset} should be the default
 
 #:::::::::::::::::: MAIN PROGRAM ::::::::::::::::
-unshift(@tmlfile, "{typeset}\n");
 # Go through each line of the input file and translate the TML Markup into Groff
-$currentElement = 0;
+$currentElement = 0; # Just a counter
 foreach $_ (@tmlfile){
 	includeFiles();
 	replaceMetadata();
@@ -82,8 +76,9 @@ foreach $_ (@tmlfile){
 	$currentElement += 1;
 }
 
-	insertEndnotes();
-	insertToc();
+# If [endnote] or [tableofcontents], we need to add .ENDNOTES and or .TOC at the end of the document.
+insertEndnotes();
+insertToc();
 
 # Print out the MOM file.
 foreach $_ (@tmlfile){print $_;}
@@ -262,9 +257,13 @@ sub replaceParagraphLayout{
 }
 
 sub replaceKerning{
-#{kerning:on|off}
+	#{kerning:on|off}
 	$_ =~ s/{kerning:on}/\.KERN/;	
-	$_ =~ s/{kerning:off(.*?)}/\.KERN OFF/;	
+	$_ =~ s/{kerning:off(.*?)}/\.KERN OFF/;
+	
+	# Inline pairwise kerning: F<-5>or the re<+5>cord.
+	$_ =~ s/<-(\d+)>/\\\*\[BU $1\]/;
+	$_ =~ s/<\+(\d+)>/\\\*\[FU $1\]/;
 
 }
 sub replaceLigatures{
