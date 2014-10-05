@@ -1,4 +1,4 @@
-# Features to come / Wishlist
+# Features to come
 - modify regular expressions to allow spaces and or hyphens in {...}, [....] and <...<
 - add {align:left|right|center} for non-filling alignment of text
 - add synonyms for {justification:...} => {justify:...} and {quad:...}
