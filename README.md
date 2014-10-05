@@ -8,11 +8,11 @@ TML fills this gap by providing a simple markup to define various stylistic feat
 
 TML addresses the needs of typographers, authors, writers that need a little more control over the visual elements of text offered by more complex systems asich as TeX and Groff, in a way that insulates the user from having to know TeX or Groff, yet still benefit from their powerful features and beautiful output. 
 
-Heavily inspired by Peter Schaffter's tremendous work and uses his [MOM macros](www.schaffter.ca/mom/mom-01.html) for groff.
+Heavily inspired by Peter Schaffter's tremendous work and uses his [MOM macros](http://www.schaffter.ca/mom/mom-05.html) for groff.
 
 ## How do I use it?
 
-Well, first you will need to have Peter Schaffter's MOM macros installed [MOM macros](www.schaffter.ca/mom/mom-01.html).
+Well, first you will need to have Peter Schaffter's MOM macros installed [MOM macros](http://www.schaffter.ca/mom/mom-05.html).
 
 Then you can run:
 
