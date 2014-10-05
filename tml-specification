@@ -213,8 +213,13 @@
 <uppercase<...> / <caps<...> / <uc<...>
 <lowercase<...> / <lc<...>
 
+
+## Kerning
+<-x> / <+n> => T<-2>he trees turned to dust.
+
 # Alignment
 
+#
 
 
 ## COMMENTS:
