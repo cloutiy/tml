@@ -64,7 +64,8 @@ foreach $_ (@tmlfile){
 	replaceEnDash();
 	replaceEmDash();
 	replaceEllipses();
-	replaceBlankLine();
+	replaceNewline();
+	replaceBlankline();
 	replaceNewPage();
 	replaceBlankPage();
 #	replaceCollate();
@@ -131,7 +132,7 @@ sub replacePageLayout{
 		$_ =~ s/{papersize:ledger}/\.PAPER LEDGER/;
 		$_ =~ s/{papersize:folio}/\.PAPER FOLIO/;
 		$_ =~ s/{papersize:quarto}/\.PAPER QUARTO/;
-		$_ =~ s/{papersize:trade}/\.PAGEWIDTH 6i\n.PAGELENGTH 9i/;
+		$_ =~ s/{papersize:trade}/.PAGEWIDTH 6i\n.PAGELENGTH 9i/;
 		
 		$_ =~ s/{papersize:executive}/\.PAPER EXECUTIVE/;
 		$_ =~ s/{papersize:10x14}/\.PAPER 10x14/;
@@ -140,7 +141,7 @@ sub replacePageLayout{
 		$_ =~ s/{papersize:a5}/\.PAPER A5/;
 		$_ =~ s/{papersize:b4}/\.PAPER B4/;
 		$_ =~ s/{papersize:b5}/\.PAPER B5/;
-		$_ =~ s/{papersize:6x9}/\.PAGEWIDTH 6i\n.PAGELENGTH 9i/;
+		$_ =~ s/{papersize:6x9}/.PAGEWIDTH 6i\n.PAGELENGTH 9i/;
 		
 		$_ =~ s/{pagesize:letter}/\.PAPER LETTER/;
 		$_ =~ s/{pagesize:legal}/\.PAPER LEGAL/;
@@ -149,7 +150,7 @@ sub replacePageLayout{
 		$_ =~ s/{pagesize:ledger}/\.PAPER LEDGER/;
 		$_ =~ s/{pagesize:folio}/\.PAPER FOLIO/;
 		$_ =~ s/{pagesize:quarto}/\.PAPER QUARTO/;
-		$_ =~ s/{pagesize:trade}/\.PAGEWIDTH 6i\n.PAGELENGTH 9i/;
+		$_ =~ s/{pagesize:trade}/.PAGEWIDTH 6i\n.PAGELENGTH 9i/;
 		
 		$_ =~ s/{pagesize:executive}/\.PAPER EXECUTIVE/;
 		$_ =~ s/{pagesize:10x14}/\.PAPER 10x14/;
@@ -158,7 +159,7 @@ sub replacePageLayout{
 		$_ =~ s/{pagesize:a5}/\.PAPER A5/;
 		$_ =~ s/{pagesize:b4}/\.PAPER B4/;
 		$_ =~ s/{pagesize:b5}/\.PAPER B5/;
-		$_ =~ s/{pagesize:6x9}/\.PAGEWIDTH 6i\n.PAGELENGTH 9i/;
+		$_ =~ s/{pagesize:6x9}/.PAGEWIDTH 6i\n.PAGELENGTH 9i/;
 
 		#:: Page width and height
 		$_ =~ s/{pagewidth:(.*?)}/\.PAGEWIDTH $1/;
@@ -505,6 +506,9 @@ sub replaceSpecialChars{
  #Ballot box \[sq]
   $_ =~ s/\|sq\|/\\[sq\]/g; 
   $_ =~ s/\|square\|/\\[sq\]/g; 
+ # Checkmark \[OK]
+  $_ =~ s/\|check\|/\\[OK\]/g; 
+  $_ =~ s/\|checkmark\|/\\[OK\]/g; 
  # One-quarter \[14] 
   $_ =~ s/\|1\/4\|/\\[14\]/g; 
  # One-half \[12] 
@@ -555,7 +559,8 @@ sub replaceEllipses(){
 		#$_ =~ s/\|\*(.*?)\*\|/\\\*\[BDI\]$1\\\*\[PREV\]/;  
 }
 
-sub replaceBlankLine(){
+sub replaceNewline(){
+		# Replace empty lines => lines that start with \n
 		$_ =~ s/^\n/\.\n/;
 }
 
@@ -567,6 +572,9 @@ sub replaceBlankPage(){
 		#$_ =~ s/\[chapter\]/\.HEADING 1/;
 }
 
+sub replaceBlankline{
+	$_ =~ s/\[blankline\]/\.SPACE/;
+}
 sub replaceComments{
 		$_ =~ s/^#/\\#/;	
 }
@@ -688,23 +696,30 @@ sub parseCommands(){
 					# If command has no value		
 					}else
 					{
-						if ($command =~ /bolditalic|bi/ ){ $openGroup = $openGroup . "\\*[BDI]"; push(@closeGroup,"\\*[PREV]");}
-						elsif ($command =~ /italic|it|i/ ){ $openGroup = $openGroup . "\\*[IT]"; push(@closeGroup,"\\*[PREV]");}
-						elsif ($command =~ /bold|bld|b/ ){ $openGroup = $openGroup . "\\*[BD]"; push(@closeGroup,"\\*[PREV]");}
-						elsif ($command =~ /monospaced|mono|m/ ){ $openGroup = $openGroup . "\\*[CODE]"; push(@closeGroup,"\\*[CODE OFF]");}
-						#elsif ($command =~ /dropcap/){ $openGroup = $openGroup . ".DROPCAP"; push(@closeGroup,"\\*[PREV]");}
-						elsif ($command =~ /smallcaps|sc/){ $openGroup = $openGroup . ".FT SC\n"; push(@closeGroup,"\n.FT\n");}
+						if ($command eq "bolditalic" ){ $openGroup = $openGroup . "\\*[BDI]"; push(@closeGroup,"\\*[PREV]");}
+						elsif ($command eq "bi" ){ $openGroup = $openGroup . "\\*[BDI]"; push(@closeGroup,"\\*[PREV]");}
+						elsif ($command eq "italic"){ $openGroup = $openGroup . "\\*[IT]"; push(@closeGroup,"\\*[PREV]");}
+						elsif ($command eq "it"){ $openGroup = $openGroup . "\\*[IT]"; push(@closeGroup,"\\*[PREV]");}
+						elsif ($command eq "i"){ $openGroup = $openGroup . "\\*[IT]"; push(@closeGroup,"\\*[PREV]");}
+						elsif ($command eq "bold"){ $openGroup = $openGroup . "\\*[BD]"; push(@closeGroup,"\\*[PREV]");}
+						elsif ($command eq "bd" ){ $openGroup = $openGroup . "\\*[BD]"; push(@closeGroup,"\\*[PREV]");}
+						elsif ($command eq "b" ){ $openGroup = $openGroup . "\\*[BD]"; push(@closeGroup,"\\*[PREV]");}
+						elsif ($command eq "monospaced"){ $openGroup = $openGroup . "\\*[CODE]"; push(@closeGroup,"\\*[CODE OFF]");}
+						elsif ($command eq "mono"){ $openGroup = $openGroup . "\\*[CODE]"; push(@closeGroup,"\\*[CODE OFF]");}
+						elsif ($command eq "m"){ $openGroup = $openGroup . "\\*[CODE]"; push(@closeGroup,"\\*[CODE OFF]");}
+						elsif ($command eq "dropcap"){ $openGroup = $openGroup . ".DROPCAP "; push(@closeGroup," 2 COND 90\n");}
+						elsif ($command =~ /smallcaps|sc/){ $openGroup = $openGroup . "\\f[SC]"; push(@closeGroup,"\\f[P]");}
 						#elsif ($command =~ /condense|cond/){print "<condense>";push(@closeGroup,"</condense>");}
-						elsif ($command =~ /left/ ){$openGroup = $openGroup . ".LEFT\n";}
-						elsif ($command =~ /right/ ){$openGroup = $openGroup . ".RIGHT\n";}
-						elsif ($command =~ /center/ ){$openGroup = $openGroup . ".CENTER\n";}
-						elsif ($command =~ /uppercase/ ){ $openGroup = $openGroup . "\\*[UC]"; push(@closeGroup,"\\*[LC]");}
-						elsif ($command =~ /caps/ ){ $openGroup = $openGroup . "\\*[UC]"; push(@closeGroup,"\\*[LC]");}
-						elsif ($command =~ /uc/ ){ $openGroup = $openGroup . "\\*[UC]"; push(@closeGroup,"\\*[LC]");}
-						elsif ($command =~ /lowercase/ ){ $openGroup = $openGroup . "\\*[LC]"; push(@closeGroup,"\\*[UC]");}
-						elsif ($command =~ /lc/ ){ $openGroup = $openGroup . "\\*[LC]"; push(@closeGroup,"\\*[UC]");}
-						elsif ($command =~ /footnote/ ){ $openGroup = $openGroup . "\n.FOOTNOTE\n"; push(@closeGroup,"\n.FOOTNOTE OFF\n");}
-						elsif ($command =~ /endnote/ ){ $openGroup = $openGroup . "\n.ENDNOTE\n"; push(@closeGroup,"\n.ENDNOTE OFF\n");}
+						elsif ($command eq "left" ){$openGroup = $openGroup . "\n.nf\n";push(@closeGroup,"\n.fi");}
+						elsif ($command eq "right" ){$openGroup = $openGroup . "\n.rj 1000\n";push(@closeGroup,"\n.rj 0");}
+						elsif ($command eq "center" ){$openGroup = $openGroup . "\n.ce 1000\n";push(@closeGroup,"\n.ce 0");}
+						elsif ($command eq "uppercase" ){ $openGroup = $openGroup . "\\*[UC]"; push(@closeGroup,"\\*[LC]");}
+						elsif ($command eq "caps" ){ $openGroup = $openGroup . "\\*[UC]"; push(@closeGroup,"\\*[LC]");}
+						elsif ($command eq "uc" ){ $openGroup = $openGroup . "\\*[UC]"; push(@closeGroup,"\\*[LC]");}
+						elsif ($command eq "lowercase" ){ $openGroup = $openGroup . "\\*[LC]"; push(@closeGroup,"\\*[UC]");}
+						elsif ($command eq "lc" ){ $openGroup = $openGroup . "\\*[LC]"; push(@closeGroup,"\\*[UC]");}
+						elsif ($command eq "footnote" ){ $openGroup = $openGroup . "\n.FOOTNOTE\n"; push(@closeGroup,"\n.FOOTNOTE OFF\n");}
+						elsif ($command eq "endnote" ){ $openGroup = $openGroup . "\n.ENDNOTE\n"; push(@closeGroup,"\n.ENDNOTE OFF\n");}
 					}#end if command has no value
 				}#end foreach $command (@commandGroup)
 				$newLine = $newLine . $openGroup; $openGroup = ""; 
