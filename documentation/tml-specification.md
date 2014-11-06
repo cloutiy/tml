@@ -1,93 +1,94 @@
-(TML Specification v.1.01)
+(TML Specification v.1.03)
 
 # PAGE LAYOUT
 ## Page sizes by name
-{papersize:letter}
-{papersize:legal}
-{papersize:statement}
-{papersize:tabloid}
-{papersize:ledger}
-{papersize:folio}
-{papersize:quarto}
-{papersize:trade}
+{paper-size: letter}
+{paper-size: legal}
+{paper-size: statement}
+{paper-size: tabloid}
+{paper-size: ledger}
+{paper-size: folio}
+{paper-size: quarto}
+{paper-size: trade}
 		
-{papersize:executive}
-{papersize:10x14}
-{papersize:a3}
-{papersize:a4}
-{papersize:a5}
-{papersize:b4}
-{papersize:b5}
-{papersize:6x9}
+{paper-size: executive}
+{paper-size: 10x14}
+{paper-size: a3}
+{paper-size: a4}
+{paper-size: a5}
+{paper-size: b4}
+{paper-size: b5}
+{paper-size: 6x9}
 		
-{pagesize:letter}
-{pagesize:legal}
-{pagesize:statement}
-{pagesize:tabloid}
-{pagesize:ledger}
-{pagesize:folio}
-{pagesize:quarto}
-{pagesize:trade}
+{page-size: letter}
+{page-size: legal}
+{page-size: statement}
+{page-size: tabloid}
+{page-size: ledger}
+{page-size: folio}
+{page-size: quarto}
+{page-size: trade}
 		
-{pagesize:executive}
-{pagesize:10x14}
-{pagesize:a3}
-{pagesize:a4}
-{pagesize:a5}
-{pagesize:b4}
-{pagesize:b5}
-{pagesize:6x9}
+{page-size: executive}
+{page-size: 10x14}
+{page-size: a3}
+{page-size: a4}
+{page-size: a5}
+{page-size: b4}
+{page-size: b5}
+{page-size: 6x9}
 
 ## Page width and height
-{pagewidth:nx}
-{pageheight:nx}
+{page-width: nx}
+{page-height: nx}
 		
-{paperwidth:nx}
-{paperheight:nx}
+{paper-width: nx}
+{paper-height: nx}
 
 ## MARGINS
-{marginleft:nx}
-{marginright:nx}
-{margintop:nx}
-{marginbottom:nx}
-{margins:nx nx nx nx}
+{margin-left: nx}
+{margin-right: nx}
+{margin-top: nx}
+{margin-bottom: nx}
+{margins: nx nx nx nx}
 
 ## FONTS
-{fontfamily:avant-garde}
-{fontfamily:avantgarde}
-{fontfamily:avant-garde}
-{fontfamily:bookman}
-{fontfamily:helvetica}
-{fontfamily:helvetica-narrow}
-{fontfamily:helveticanarrow}
-{fontfamily:new-century-schoolbook}
-{fontfamily:newcenturyschoolbook}
-{fontfamily:palatino}
-{fontfamily:times-roman}
-{fontfamily:times}
-{fontfamily:zapf-chancery}
-{fontfamily:zapf}
+{font-family: avant-garde}
+{font-family: avantgarde}
+{font-family: avant-garde}
+{font-family: bookman}
+{font-family: helvetica}
+{font-family: helvetica-narrow}
+{font-family: helveticanarrow}
+{font-family: new-century-schoolbook}
+{font-family: newcenturyschoolbook}
+{font-family: palatino}
+{font-family: times-roman}
+{font-family: times}
+{font-family: zapf-chancery}
+{font-family: zapf}
+{font-family: my-groff-font}
 		
 ## FONT STYLE
-{fontstyle:roman}
-{fontstyle:r}
-{fontstyle:italic}
-{fontstyle:i}
-{fontstyle:bold}
-{fontstyle:b}
-{fontstyle:bold-italic}
-{fontstyle:bolditalic}
-{fontstyle:bi}
-{fontstyle:smallcaps}
-{fontstyle:sc}
+{font-style: roman}
+{font-style: r}
+{font-style: italic}
+{font-style: i}
+{font-style: bold}
+{font-style: b}
+{font-style: bold-italic}
+{font-style: bolditalic}
+{font-style: bi}
+{font-style: smallcaps}
+{font-style: sc}
 		
 ## FONT SIZE
-{fontsize:x}
+{font-size: x}
 
 ## LINE SPACING/LEADING
-{leading:10/13} => sets PT_SIZE to 10 and .LS to 13 at same time
+{leading: 10/13} => sets PT_SIZE to 10 and .LS to 13 at same time
 {autoleading: [factor of] 2}  => not implemented yet. 
-{linespacing:13}
+{line-spacing: 13}
 
 ## JUSTIFICATION 
 {justfication:left}
@@ -96,55 +97,55 @@
 {justification:full}
 
 ## PARAGRAPHS
-{paragraphindent:nx}
-{paragraphspace:nx}
-{linelength:3i}
+{paragraph-indent: nx}
+{paragraph-space: nx}
+{line-length: 3i}
 
 ## KERNING/LIGATURES
-{kerning:on}
-{kerning:off}
-{ligatures:on}
-{ligatures:off}
+{kerning-on}
+{kerning-off}
+{ligatures-on}
+{ligatures-off}
 
 ## HYPHENATION
-{hyphenation:on}
-{hyphenation:off}
+{hyphenation-on}
+{hyphenation-off}
 {hyphenationlanguage:spanish} => not implemeted yet
-{hyphenationmax:x}
-{hyphenationmargin:x}
-{hyphenationspace:x}
-{hyphenation:reset}
+{hyphenation-max-lines: x}
+{hyphenation-margin: x}
+{hyphenation-space: x}
+{hyphenation-defaults}
 
 ## SMARTQUOTES
-{smartquotes:on}
-{smartquotes:off}
-{smartquotes:danish}
-{smartquotes:german}
-{smartquotes:spanish}
-{smartquotes:french}
-{smartquotes:italian}
-{smartquotes:dutch}
-{smartquotes:norwegian}
-{smartquotes:portugese}
-{smartquotes:swedish}
+{smartquotes-on}
+{smartquotes-off}
+{smartquotes: danish}
+{smartquotes: german}
+{smartquotes: spanish}
+{smartquotes: french}
+{smartquotes: italian}
+{smartquotes: dutch}
+{smartquotes: norwegian}
+{smartquotes: portugese}
+{smartquotes: swedish}
 
-{smartquotes:da}
-{smartquotes:ge}
-{smartquotes:es}
-{smartquotes:fr}
-{smartquotes:it}
-{smartquotes:nl}
-{smartquotes:no}
-{smartquotes:pt}
-{smartquotes:sv}
+{smartquotes: da}
+{smartquotes: ge}
+{smartquotes: es}
+{smartquotes: fr}
+{smartquotes: it}
+{smartquotes: nl}
+{smartquotes: no}
+{smartquotes: pt}
+{smartquotes: sv}
 
 # LANGUAGE
 {language:spanish} => (not implemented yet) maybe make it so that language also determines hyphenation language automatically.
 
 # PRINT STYLE
 {typeset}
-{typewriter}
-{typewriter:singlespace}
+{typewrite}
+{typewrite: singlespace}
 
 ## METADATA TAGS
 [author]
@@ -164,9 +165,12 @@
 [tableofcontents]
 [epigraph]
 [epigraphblock]
-[h1]/[heading1]/[chapter]/[chap]
-[h2]/[heading2]/[section]/[sec]
-[h3]/[heading3]/[subsection]/[subsec]
+[chapter] "Title"
+[chapter 1]
+[chapter One] "Title"
+[h1]/[heading1]/[section]/[sec]
+[h2]/[heading2]/[subsection]/[subsec]
+[h3]/[heading3]/[subsubsection]/[subsubsec]
 [blockquote]
 [quote]
 [list]
@@ -186,6 +190,7 @@
 [*footnote]
 [endnote*]
 [newpage]
+[blankpage]
 [break] / [br] / [linebreak]
 [finis]
 
@@ -207,7 +212,7 @@
 <n<...>
 <size n<...>
 
-<bold<...> / <bld<...> / <b<...>
+<bold<...> / <bd<...> / <b<...>
 <italic<...> / <it<...> / <i<...>
 <smallcaps<...> / <sc<...>
 <uppercase<...> / <caps<...> / <uc<...>
@@ -218,6 +223,9 @@
 <-x> / <+n> => T<-2>he trees turned to dust.
 
 # Alignment
+<left<...>
+<right<...>
+<center<...>
 
 #
 
