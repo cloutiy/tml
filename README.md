@@ -7,7 +7,7 @@ Although Markdown offers a simple way of handling structural elements of a docum
 TML addresses the needs of typographers, authors, writers that need a little more control over the visual elements of text offered by more complex systems asich as TeX and Groff, in a way that insulates the user from having to know TeX or Groff, yet still benefit from their powerful features and beautiful output. 
 
 # Generated Output
-Currently the TML interpretter generates only .mom and .pdf.  However once the core spec has been implemented, it will be possible to generate:
+Currently the TML interpreter generates only .mom and .pdf.  However once the core spec has been implemented, it will be possible to generate:
 
 - plain text
 - html
