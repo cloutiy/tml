@@ -1,11 +1,14 @@
-# V. 1.02
+# V. 1.03
 # Release notes:
 # Fixed
 #~~~~~~~
 #
 # Added
 #~~~~~~~
-# - Inline pairwise kerning: F<-5>or the re<+5>cord.
+# [chapter]
+# [chapter 1]
+# [chapter] "Title"
+# [chapter 1] "Title"
 
 # Todo
 #~~~~~
@@ -17,6 +20,7 @@
 @elementStack=();	#Keeps track of what the current element tag is
 $hasEndnotes="";	#If we use [endnote], .ENDNOTES must be added at the end of the document
 $hasToc="";			#If we use [tableofcontents], we must insert .TOC at the end of the document
+$firstChapter = "true"; #IF it's the first chapter, we don't want to include the .COLLATE command
 
 #:::::::::::::::::: FILE I/O ::::::::::::::::::::
 # Load the input TML document into an array of strings
@@ -24,6 +28,32 @@ open(FILE, $ARGV[0]) || die("Could not open $ARGV[0]\n");
 @tmlfile = <FILE>;
 close(FILE);
 unshift(@tmlfile, "{typeset}\n");	# Add {typeset} at the start of the document => {typeset} should be the default
+
+
+%definitions = loadDefinitions();
+
+sub loadDefinitions {
+	$currentLine = 0;
+	foreach $_ (@tmlfile){
+		$currentline += 1;
+		if ($_ =~ m/\[definitions\]/){
+			$definitionsStartIdx = currentLine;
+			unless ($_ =~ m/\[end\]/){
+				if ($_ =~ m/(.*?)\s{(.*?)}/){
+					$definitions{$1} = $2;
+				}
+			}
+			$definitionsEndIdx = currentLine;
+		}
+		last; #exit the for loop
+	}
+	splice(@tmlfile, $definitionsStartIdx, $definitionsEndIdx); # Remove the definitions section from @tmlfile
+}
+
+foreach my $key ( keys %definitions )
+{
+  print "Replace: $key with: $definitions{$key}\n";
+}
 
 #:::::::::::::::::: MAIN PROGRAM ::::::::::::::::
 # Go through each line of the input file and translate the TML Markup into Groff
@@ -113,7 +143,7 @@ sub replacePrintStyle{
 	if ($_ =~ m/{typewrite}/){
 		$tmlfile[0] = ".PRINTSTYLE TYPEWRITE\n";
 		$_ = "#\n";
-	}elsif ($_ =~ m/{typewrite:singlespace/){
+	}elsif ($_ =~ m/{typewrite:\s*single-space/){
 		$tmlfile[0] = ".PRINTSTYLE TYPEWRITE SINGLESPACE\n";
 		$_ = "#\n";
 	}else{
@@ -125,48 +155,48 @@ sub replacePrintStyle{
 sub replacePageLayout{
 		#TODO: Implement user defined sizes
 		#:: Page sizes by name
-		$_ =~ s/{papersize:letter}/\.PAPER LETTER/;
-		$_ =~ s/{papersize:legal}/\.PAPER LEGAL/;
-		$_ =~ s/{papersize:statement}/\.PAPER STATEMENT/;
-		$_ =~ s/{papersize:tabloid}/\.PAPER TABLOID/;
-		$_ =~ s/{papersize:ledger}/\.PAPER LEDGER/;
-		$_ =~ s/{papersize:folio}/\.PAPER FOLIO/;
-		$_ =~ s/{papersize:quarto}/\.PAPER QUARTO/;
-		$_ =~ s/{papersize:trade}/.PAGEWIDTH 6i\n.PAGELENGTH 9i/;
+		$_ =~ s/{paper-size:\s*letter}/\.PAPER LETTER/;
+		$_ =~ s/{paper-size:\s*legal}/\.PAPER LEGAL/;
+		$_ =~ s/{paper-size:\s*statement}/\.PAPER STATEMENT/;
+		$_ =~ s/{paper-size:\s*tabloid}/\.PAPER TABLOID/;
+		$_ =~ s/{paper-size:\s*ledger}/\.PAPER LEDGER/;
+		$_ =~ s/{paper-size:\s*folio}/\.PAPER FOLIO/;
+		$_ =~ s/{paper-size:\s*quarto}/\.PAPER QUARTO/;
+		$_ =~ s/{paper-size:\s*trade}/.PAGEWIDTH 6i\n.PAGELENGTH 9i/;
 		
-		$_ =~ s/{papersize:executive}/\.PAPER EXECUTIVE/;
-		$_ =~ s/{papersize:10x14}/\.PAPER 10x14/;
-		$_ =~ s/{papersize:a3}/\.PAPER A3/;
-		$_ =~ s/{papersize:a4}/\.PAPER A4/;
-		$_ =~ s/{papersize:a5}/\.PAPER A5/;
-		$_ =~ s/{papersize:b4}/\.PAPER B4/;
-		$_ =~ s/{papersize:b5}/\.PAPER B5/;
-		$_ =~ s/{papersize:6x9}/.PAGEWIDTH 6i\n.PAGELENGTH 9i/;
+		$_ =~ s/{paper-size:\s*executive}/\.PAPER EXECUTIVE/;
+		$_ =~ s/{paper-size:\s*10x14}/\.PAPER 10x14/;
+		$_ =~ s/{paper-size:\s*a3}/\.PAPER A3/;
+		$_ =~ s/{paper-size:\s*a4}/\.PAPER A4/;
+		$_ =~ s/{paper-size:\s*a5}/\.PAPER A5/;
+		$_ =~ s/{paper-size:\s*b4}/\.PAPER B4/;
+		$_ =~ s/{paper-size:\s*b5}/\.PAPER B5/;
+		$_ =~ s/{paper-size:\s*6x9}/.PAGEWIDTH 6i\n.PAGELENGTH 9i/;
 		
-		$_ =~ s/{pagesize:letter}/\.PAPER LETTER/;
-		$_ =~ s/{pagesize:legal}/\.PAPER LEGAL/;
-		$_ =~ s/{pagesize:statement}/\.PAPER STATEMENT/;
-		$_ =~ s/{pagesize:tabloid}/\.PAPER TABLOID/;
-		$_ =~ s/{pagesize:ledger}/\.PAPER LEDGER/;
-		$_ =~ s/{pagesize:folio}/\.PAPER FOLIO/;
-		$_ =~ s/{pagesize:quarto}/\.PAPER QUARTO/;
-		$_ =~ s/{pagesize:trade}/.PAGEWIDTH 6i\n.PAGELENGTH 9i/;
+		$_ =~ s/{page-size:\s*letter}/\.PAPER LETTER/;
+		$_ =~ s/{page-size:\s*legal}/\.PAPER LEGAL/;
+		$_ =~ s/{page-size:\s*statement}/\.PAPER STATEMENT/;
+		$_ =~ s/{page-size:\s*tabloid}/\.PAPER TABLOID/;
+		$_ =~ s/{page-size:\s*ledger}/\.PAPER LEDGER/;
+		$_ =~ s/{page-size:\s*folio}/\.PAPER FOLIO/;
+		$_ =~ s/{page-size:\s*quarto}/\.PAPER QUARTO/;
+		$_ =~ s/{page-size:\s*trade}/.PAGEWIDTH 6i\n.PAGELENGTH 9i/;
 		
-		$_ =~ s/{pagesize:executive}/\.PAPER EXECUTIVE/;
-		$_ =~ s/{pagesize:10x14}/\.PAPER 10x14/;
-		$_ =~ s/{pagesize:a3}/\.PAPER A3/;
-		$_ =~ s/{pagesize:a4}/\.PAPER A4/;
-		$_ =~ s/{pagesize:a5}/\.PAPER A5/;
-		$_ =~ s/{pagesize:b4}/\.PAPER B4/;
-		$_ =~ s/{pagesize:b5}/\.PAPER B5/;
-		$_ =~ s/{pagesize:6x9}/.PAGEWIDTH 6i\n.PAGELENGTH 9i/;
+		$_ =~ s/{page-size:\s*executive}/\.PAPER EXECUTIVE/;
+		$_ =~ s/{page-size:\s*10x14}/\.PAPER 10x14/;
+		$_ =~ s/{page-size:\s*a3}/\.PAPER A3/;
+		$_ =~ s/{page-size:\s*a4}/\.PAPER A4/;
+		$_ =~ s/{page-size:\s*a5}/\.PAPER A5/;
+		$_ =~ s/{page-size:\s*b4}/\.PAPER B4/;
+		$_ =~ s/{page-size:\s*b5}/\.PAPER B5/;
+		$_ =~ s/{page-size:\s*6x9}/.PAGEWIDTH 6i\n.PAGELENGTH 9i/;
 
 		#:: Page width and height
-		$_ =~ s/{pagewidth:(.*?)}/\.PAGEWIDTH $1/;
-		$_ =~ s/{pageheight:(.*?)}/\.PAGELENGTH $1/;
+		$_ =~ s/{page-width:\s*(.+)}/\.PAGEWIDTH $1/;
+		$_ =~ s/{page-height:\s*(.+)}/\.PAGELENGTH $1/;
 		
-		$_ =~ s/{paperwidth:(.*?)}/\.PAGEWIDTH $1/;
-		$_ =~ s/{paperheight:(.*?)}/\.PAGELENGTH $1/;
+		$_ =~ s/{paper-width:\s*(.+)}/\.PAGEWIDTH $1/;
+		$_ =~ s/{paper-height:\s*(.+)}/\.PAGELENGTH $1/;
 		
 		#TODO: Implement user defined sizes
 }
@@ -177,46 +207,46 @@ sub replaceMargins{
 		#{margintop:nx}
 		#{marginbottom:nx}
 		#{margins:nx nx nx nx}
-		$_ =~ s/{marginleft:(.*?)}/\.L_MARGIN $1/;
-		$_ =~ s/{marginright:(.*?)}/\.R_MARGIN $1/;
-		$_ =~ s/{margintop:(.*?)}/\.T_MARGIN $1/;
-		$_ =~ s/{marginbottom:(.*?)}/\.B_MARGIN $1/;
-		$_ =~ s/{margins:(.*?)\s(.*?)\s(.*?)\s(.*?)}/\.L_MARGIN $1\n\.R_MARGIN $2\n\.T_MARGIN $3\n\.B_MARGIN $4/;
+		$_ =~ s/{margin-left:\s*(.+)}/\.L_MARGIN $1/;
+		$_ =~ s/{margin-right:\s*(.+)}/\.R_MARGIN $1/;
+		$_ =~ s/{margin-top:\s*(.+)}/\.T_MARGIN $1/;
+		$_ =~ s/{margin-bottom:\s*(.+)}/\.B_MARGIN $1/;
+		$_ =~ s/{margins:\s*(.+)\s*(.+)\s*(.+)\s*(.+)}/\.L_MARGIN $1\n\.R_MARGIN $2\n\.T_MARGIN $3\n\.B_MARGIN $4/;
 }
 
 
 sub replaceFonts{
 		#{fontfamily:}
-		$_ =~ s/{fontfamily:avant-garde}/\.FAMILY A/;
-		$_ =~ s/{fontfamily:avantgarde}/\.FAMILY A/;
-		$_ =~ s/{fontfamily:avant-garde}/\.FAMILY A/;
-		$_ =~ s/{fontfamily:bookman}/\.FAMILY BM/;
-		$_ =~ s/{fontfamily:helvetica}/\.FAMILY H/;
-		$_ =~ s/{fontfamily:helvetica-narrow}/\.FAMILY HN/;
-		$_ =~ s/{fontfamily:helveticanarrow}/\.FAMILY HN/;
-		$_ =~ s/{fontfamily:new-century-schoolbook}/\.FAMILY N/;
-		$_ =~ s/{fontfamily:newcenturyschoolbook}/\.FAMILY N/;
-		$_ =~ s/{fontfamily:palatino}/\.FAMILY P/;
-		$_ =~ s/{fontfamily:times-roman}/\.FAMILY T/;
-		$_ =~ s/{fontfamily:times}/\.FAMILY T/;
-		$_ =~ s/{fontfamily:zapf-chancery}/\.FAMILY ZCM/;
-		$_ =~ s/{fontfamily:zapf}/\.FAMILY ZCM/;
+		$_ =~ s/{font-family:\s*avant-garde}/\.FAMILY A/;
+		$_ =~ s/{font-family:\s*avantgarde}/\.FAMILY A/;
+		$_ =~ s/{font-family:\s*avant-garde}/\.FAMILY A/;
+		$_ =~ s/{font-family:\s*bookman}/\.FAMILY BM/;
+		$_ =~ s/{font-family:\s*helvetica}/\.FAMILY H/;
+		$_ =~ s/{font-family:\s*helvetica-narrow}/\.FAMILY HN/;
+		$_ =~ s/{font-family:\s*helveticanarrow}/\.FAMILY HN/;
+		$_ =~ s/{font-family:\s*new-century-schoolbook}/\.FAMILY N/;
+		$_ =~ s/{font-family:\s*newcenturyschoolbook}/\.FAMILY N/;
+		$_ =~ s/{font-family:\s*palatino}/\.FAMILY P/;
+		$_ =~ s/{font-family:\s*times-roman}/\.FAMILY T/;
+		$_ =~ s/{font-family:\s*times}/\.FAMILY T/;
+		$_ =~ s/{font-family:\s*zapf-chancery}/\.FAMILY ZCM/;
+		$_ =~ s/{font-family:\s*zapf}/\.FAMILY ZCM/;
 		
 		#{fontstyle:}
-		$_ =~ s/{fontstyle:roman}/\.FT R/;
-		$_ =~ s/{fontstyle:r}/\.FT R/;
-		$_ =~ s/{fontstyle:italic}/\.FT I/;
-		$_ =~ s/{fontstyle:i}/\.FT I/;
-		$_ =~ s/{fontstyle:bold}/\.FT B/;
-		$_ =~ s/{fontstyle:b}/\.FT I/;
-		$_ =~ s/{fontstyle:bold-italic}/\.FT BI/;
-		$_ =~ s/{fontstyle:bolditalic}/\.FT BI/;
-		$_ =~ s/{fontstyle:bi}/\.FT I/;
-		$_ =~ s/{fontstyle:smallcaps}/\.FT SC/;
-		$_ =~ s/{fontstyle:sc}/\.FT BI/;
+		$_ =~ s/{font-style:\s*roman}/\.FT R/;
+		$_ =~ s/{font-style:\s*r}/\.FT R/;
+		$_ =~ s/{font-style:\s*italic}/\.FT I/;
+		$_ =~ s/{font-style:\s*i}/\.FT I/;
+		$_ =~ s/{font-style:\s*bold}/\.FT B/;
+		$_ =~ s/{font-style:\s*b}/\.FT I/;
+		$_ =~ s/{font-style:\s*bold-italic}/\.FT BI/;
+		$_ =~ s/{font-style:\s*bolditalic}/\.FT BI/;
+		$_ =~ s/{font-style:\s*bi}/\.FT I/;
+		$_ =~ s/{font-style:\s*smallcaps}/\.FT SC/;
+		$_ =~ s/{font-style:\s*sc}/\.FT BI/;
 		
 		#{fontsize:}
-		$_ =~ s/{fontsize:(.*?)}/\.PT_SIZE $1/;
+		$_ =~ s/{font-size:\s*(.+)}/\.PT_SIZE $1/;
 		
 		#{fontcolor:}
 }
@@ -224,43 +254,50 @@ sub replaceFonts{
 sub replaceLeading{
 	#:: LINE SPACING/LEADING
 	#{leading: 10/13} => sets PT_SIZE to 10 and .LS to 13 at same time
-	$_ =~ s/{leading:(.*?)\/(.*?)}/\.PT_SIZE $1\n\.LS $2/;
+	$_ =~ s/{leading:\s*(.+)\/\s*(.+)}/\.PT_SIZE $1\n\.LS $2/;
 	
 	#{autoleading: [factor of] 2}  => maybe 
 	
 	#{linespacing: 13}
-	$_ =~ s/{linespacing:(.*?)}/\.LS $1/;
+	$_ =~ s/{line-spacing:\s*(.+)}/\.LS $1/;
 }
 
 sub replaceJustification{
 	#{justfication:left}
-	$_ =~ s/{justification:left}/\.QUAD LEFT/;
+	$_ =~ s/{justification:\s*left}/\.QUAD LEFT/;
+	$_ =~ s/{justify-left}/\.QUAD LEFT/;
 	
 	#{justfication:right}
-	$_ =~ s/{justification:right}/\.QUAD RIGHT/;
+	$_ =~ s/{justification:\s*right}/\.QUAD RIGHT/;
+	$_ =~ s/{justify-right}/\.QUAD RIGHT/;
 	
 	#{justification:center}
-	$_ =~ s/{justification:center}/\.QUAD CENTER/;
+	$_ =~ s/{justification:\s*center}/\.QUAD CENTER/;
+	$_ =~ s/{justify-center}/\.QUAD CENTER/;
 	
 	#{justification:full}
-	$_ =~ s/{justification:full}/\.QUAD JUSTIFIED/;
+	$_ =~ s/{justification:\s*full}/\.QUAD JUSTIFIED/;
+	$_ =~ s/{justify-full}/\.QUAD JUSTIFIED/;
+	$_ =~ s/{justify}/\.QUAD JUSTIFIED/;
 }
 
 sub replaceParagraphLayout{
 	#{paragraphindent: nx}
-	$_ =~ s/{paragraphindent:(.*?)}/\.PARA_INDENT $1/;
+	$_ =~ s/{paragraph-indent:\s*(.+)}/\.PARA_INDENT $1/;
 		
 	#{paragraphspace: nx}
-	$_ =~ s/{paragraphspace:(.*?)}/\.PARA_SPACE $1/;
+	$_ =~ s/{paragraph-space:\s*(.+)}/\.PARA_SPACE $1/;
 	
 	#{linelength:3i}
-	$_ =~ s/{linelength:(.*?)}/\.LL $1/;	
+	$_ =~ s/{line-length:\s*(.+)}/\.LL $1/;	
 }
 
 sub replaceKerning{
 	#{kerning:on|off}
-	$_ =~ s/{kerning:on}/\.KERN/;	
-	$_ =~ s/{kerning:off(.*?)}/\.KERN OFF/;
+	$_ =~ s/{kerning:\s*on}/\.KERN/;
+	$_ =~ s/{kerning-on}/\.KERN/;
+	$_ =~ s/{kerning:\s*off}/\.KERN OFF/;
+	$_ =~ s/{kerning-off}/\.KERN OFF/;
 	
 	# Inline pairwise kerning: F<-5>or the re<+5>cord.
 	$_ =~ s/<-(\d+)>/\\\*\[BU $1\]/;
@@ -270,59 +307,67 @@ sub replaceKerning{
 sub replaceLigatures{
 	#{ligatures:on}
 	#{ligatures:off}
-	$_ =~ s/{ligatures:on}/\.LIG/;	
-	$_ =~ s/{ligatures:off}/\.LIG OFF/;
+	$_ =~ s/{ligatures:\s*on}/\.LIG/;
+	$_ =~ s/{ligatures-on}/\.LIG/;
+	$_ =~ s/{ligatures:\s*off}/\.LIG OFF/;
+	$_ =~ s/{ligatures-off}/\.LIG OFF/;
 }
 
 sub replaceSmartquotes{
 	#{smartquotes:on}
 	#{smartquotes:off}
-	$_ =~ s/{smartquotes:on}/\.HY/;	
-	$_ =~ s/{smartquotes:off}/\.HY OFF/;
+	$_ =~ s/{smartquotes:\s*on}/\.HY/;	
+	$_ =~ s/{smartquotes-on}/\.HY/; 
+	$_ =~ s/{smartquotes:\s*off}/\.HY OFF/;
+	$_ =~ s/{smartquotes-off}/\.HY OFF/;
 }
 
 sub replaceHyphenation{
 	#{hyphenation:on}
 	#{hyphenation:off}
-	$_ =~ s/{hyphenation:on}/\.HY/;	
-	$_ =~ s/{hyphenation:off}/\.HY OFF/;	
+	$_ =~ s/{hyphenation:\s*on}/\.HY/;
+	$_ =~ s/{hyphenation-on}/\.HY/; 
+	$_ =~ s/{hyphenation:\s*off}/\.HY OFF/;
+	$_ =~ s/{hyphenation-off}/\.HY OFF/;
 	
 	#{hyphenationlanguage:spanish}
 	#{hyphenationmax:}
-	$_ =~ s/{hyphenationmaxlines:(.*?)}/\.HY LINES $1/;	
+	$_ =~ s/{hyphenation-max-lines:\s*(.+)}/\.HY LINES $1/;
+	$_ =~ s/{hyphenation-maxlines:\s*(.+)}/\.HY LINES $1/;
 	
 	#{hyphenationmargin:}
-	$_ =~ s/{hyphenationmargin:(.*?)}/\.HY MARGIN $1/;
+	$_ =~ s/{hyphenation-margin:\s*(.+)}/\.HY MARGIN $1/;
 	
 	#{hyphenationspace:}
-	$_ =~ s/{hyphenationspace:(.*?)}/\.HY SPACE $1/;
+	$_ =~ s/{hyphenation-space:\s*(.+)}/\.HY SPACE $1/;
 	
 	#{hyphenation:reset}
-	$_ =~ s/{hyphenation:reset}/\.HY DEFAULT/;
+	$_ =~ s/{hyphenation:\s*reset}/\.HY DEFAULT/;
+	$_ =~ s/{hyphenation-reset}/\.HY DEFAULT/;
 }
 
 sub replaceSmartquotes{
-	$_ =~ s/{smartquotes:on}/\.SMARTQUOTES/;
-	$_ =~ s/{smartquotes:off}/\.SMARTQUOTES OFF/;
-	$_ =~ s/{smartquotes:danish}/\.SMARTQUOTES DA/;
-	$_ =~ s/{smartquotes:german}/\.SMARTQUOTES GE/;
-	$_ =~ s/{smartquotes:spanish}/\.SMARTQUOTES ES/;
-	$_ =~ s/{smartquotes:french}/\.SMARTQUOTES FR/;
-	$_ =~ s/{smartquotes:italian}/\.SMARTQUOTES IT/;
-	$_ =~ s/{smartquotes:dutch}/\.SMARTQUOTES NL/;
-	$_ =~ s/{smartquotes:norwegian}/\.SMARTQUOTES NO/;
-	$_ =~ s/{smartquotes:portugese}/\.SMARTQUOTES PT/;
-	$_ =~ s/{smartquotes:swedish}/\.SMARTQUOTES SV/;
+	$_ =~ s/{smartquotes:\s*on}/\.SMARTQUOTES/;
+	$_ =~ s/{smartquotes:\s*off}/\.SMARTQUOTES OFF/;
+	$_ =~ s/{smartquotes:\s*danish}/\.SMARTQUOTES DA/;
+	$_ =~ s/{smartquotes:\s*german}/\.SMARTQUOTES GE/;
+	$_ =~ s/{smartquotes:\s*spanish}/\.SMARTQUOTES ES/;
+	$_ =~ s/{smartquotes:\s*french}/\.SMARTQUOTES FR/;
+	$_ =~ s/{smartquotes:\s*italian}/\.SMARTQUOTES IT/;
+	$_ =~ s/{smartquotes:\s*dutch}/\.SMARTQUOTES NL/;
+	$_ =~ s/{smartquotes:\s*norwegian}/\.SMARTQUOTES NO/;
+	$_ =~ s/{smartquotes:\s*portugese}/\.SMARTQUOTES PT/;
+	$_ =~ s/{smartquotes:\s*swedish}/\.SMARTQUOTES SV/;
 
-	$_ =~ s/{smartquotes:da}/\.SMARTQUOTES DA/;
-	$_ =~ s/{smartquotes:ge}/\.SMARTQUOTES GE/;
-	$_ =~ s/{smartquotes:es}/\.SMARTQUOTES ES/;
-	$_ =~ s/{smartquotes:fr}/\.SMARTQUOTES FR/;
-	$_ =~ s/{smartquotes:it}/\.SMARTQUOTES IT/;
-	$_ =~ s/{smartquotes:nl}/\.SMARTQUOTES NL/;
-	$_ =~ s/{smartquotes:no}/\.SMARTQUOTES NO/;
-	$_ =~ s/{smartquotes:pt}/\.SMARTQUOTES PT/;
-	$_ =~ s/{smartquotes:sv}/\.SMARTQUOTES SV/;
+	$_ =~ s/{smartquotes:\s*da}/\.SMARTQUOTES DA/;
+	$_ =~ s/{smartquotes:\s*ge}/\.SMARTQUOTES GE/;
+	$_ =~ s/{smartquotes:\s*es}/\.SMARTQUOTES ES/;
+	$_ =~ s/{smartquotes:\s*fr}/\.SMARTQUOTES FR/;
+	$_ =~ s/{smartquotes:\s*it}/\.SMARTQUOTES IT/;
+	$_ =~ s/{smartquotes:\s*nl}/\.SMARTQUOTES NL/;
+	$_ =~ s/{smartquotes:\s*no}/\.SMARTQUOTES NO/;
+	$_ =~ s/{smartquotes:\s*pt}/\.SMARTQUOTES PT/;
+	$_ =~ s/{smartquotes:\s*sv}/\.SMARTQUOTES SV/;
 }
 
 sub replaceToc{
@@ -346,8 +391,39 @@ sub replaceEpigraphBlock {
 }
 
 sub replaceChapter {
-		$_ =~ s/\[chapter\]/\.CHAPTER_TITLE/;
-		$_ =~ s/\[chap\]/\.CHAPTER/;
+# IF match [chapter], check if it's the first time. If yes do not put .COLLATE
+if (m/\[chapter/) {    
+    if ($firstChapter eq "true") {
+        $firstChapter = "false";
+        #[chapter 1] "Title"
+        $_ =~ s/\[chapter (.+)\]\s*(".*?")/\.CHAPTER $1\n\.CHAPTER_TITLE $2\n\.START/;
+        #[chapter 1]
+        $_ =~ s/\[chapter (.+)\]/\.CHAPTER $1\n\.CHAPTER_TITLE\n\.START/;
+        #[chapter] "Title"
+        $_ =~ s/\[chapter\] (.+)/\.CHAPTER_TITLE $1\n\.START/;
+        #[chapter]
+		$_ =~ s/\[chapter\]/\.CHAPTER_TITLE\n\.START/;
+		
+        $_ =~ s/\[chap (.+)\] (.+)/\.CHAPTER $1\n\.CHAPTER_TITLE $2\n\.START/;
+        $_ =~ s/\[chap (.+)\]/\.CHAPTER $1\n\.CHAPTER_TITLE\n\.START/;
+        $_ =~ s/\[chap\] (.+)/\.CHAPTER_TITLE $1\n\.START/;
+        $_ =~ s/\[chap\]/\.CHAPTER_TITLE\n\.START/;
+    } else { 
+        #[chapter 1] "Title"
+        $_ =~ s/\[chapter (.+)\]\s*(".*?")/\.COLLATE\n\.CHAPTER $1\n\.CHAPTER_TITLE $2\n\.START/;
+        #[chapter 1]
+        $_ =~ s/\[chapter (.+)\]/\.COLLATE\n\.CHAPTER $1\n\.CHAPTER_TITLE\n.START/;
+        #[chapter] "Title"
+        $_ =~ s/\[chapter\] (.+)/\.COLLATE\n\.CHAPTER_TITLE $1\n\.START/;
+        #[chapter]
+        $_ =~ s/\[chapter\]/\.COLLATE\n\.CHAPTER_TITLE\n\.START/;
+        
+        $_ =~ s/\[chap (.+)\] (.+)/\.COLLATE\n\.CHAPTER $1\n\.CHAPTER_TITLE $2\n\.START/;
+        $_ =~ s/\[chap (.+)\]/\.COLLATE\n\.CHAPTER $1\n\.CHAPTER_TITLE\n\.START/;
+        $_ =~ s/\[chap\] (.+)/\.COLLATE\n\.CHAPTER_TITLE $1\n\.START/;
+        $_ =~ s/\[chap\]/\.COLLATE\n\.CHAPTER_TITLE\n\.START/;
+    }
+}
 }
 
 sub replaceSection {
@@ -387,33 +463,33 @@ sub replaceQuote {
 }
 
 sub replaceList {
-		if( $_ =~ s/\[list:digit\]/\.LIST DIGIT/){
+		if( $_ =~ s/\[list:\s*digit\]/\.LIST DIGIT/){
 			push(@elementStack, ".LIST OFF");}
-		elsif( $_ =~ s/\[list:dash\]/\.LIST DASH/){
+		elsif( $_ =~ s/\[list:\s*dash\]/\.LIST DASH/){
 			push(@elementStack, ".LIST OFF");}
-		elsif( $_ =~ s/\[list:bullet\]/\.LIST BULLET/){
+		elsif( $_ =~ s/\[list:\s*bullet\]/\.LIST BULLET/){
 			push(@elementStack, ".LIST OFF");}
-		elsif( $_ =~ s/\[list:alpha\]/\.LIST alpha/){
+		elsif( $_ =~ s/\[list:\s*alpha\]/\.LIST alpha/){
 			push(@elementStack, ".LIST OFF");}
-		elsif( $_ =~ s/\[list:ALPHA\]/\.LIST ALPHA/){
+		elsif( $_ =~ s/\[list:\s*ALPHA\]/\.LIST ALPHA/){
 			push(@elementStack, ".LIST OFF");}
 		elsif( $_ =~ s/\[list\]/\.LIST DIGIT/){
 			push(@elementStack, ".LIST OFF");}
-		elsif( $_ =~ s/\[list:(roman.*?)\]/\.LIST $1/){
+		elsif( $_ =~ s/\[list:\s*(roman.*?)\]/\.LIST $1/){
 			push(@elementStack, ".LIST OFF");}
-		elsif( $_ =~ s/\[list:(ROMAN.*?)\]/\.LIST $1/){
+		elsif( $_ =~ s/\[list:\s*(ROMAN.*?)\]/\.LIST $1/){
 			push(@elementStack, ".LIST OFF");}
-		elsif( $_ =~ s/\[list:square\]/\.LIST USER \\[sq\]/){
+		elsif( $_ =~ s/\[list:\s*square\]/\.LIST USER \\[sq\]/){
 			push(@elementStack, ".LIST OFF");}
-		elsif( $_ =~ s/\[list:hand\]/\.LIST USER \\[rh\]/){
+		elsif( $_ =~ s/\[list:\s*hand\]/\.LIST USER \\[rh\]/){
 			push(@elementStack, ".LIST OFF");}
-		elsif( $_ =~ s/\[list:arrow\]/\.LIST USER \\[->\]/){
+		elsif( $_ =~ s/\[list:\s*arrow\]/\.LIST USER \\[->\]/){
 			push(@elementStack, ".LIST OFF");}
-		elsif( $_ =~ s/\[list:dblarrow\]/\.LIST USER \\[rA\]/){
+		elsif( $_ =~ s/\[list:\s*dblarrow\]/\.LIST USER \\[rA\]/){
 			push(@elementStack, ".LIST OFF");}
-		elsif( $_ =~ s/\[list:checkmark\]/\.LIST USER \\[OK\]/){
+		elsif( $_ =~ s/\[list:\s*checkmark\]/\.LIST USER \\[OK\]/){
 			push(@elementStack, ".LIST OFF");}
-		elsif( $_ =~ s/\[list:user(.*?)\]/\.LIST USER "$1"/){
+		elsif( $_ =~ s/\[list:\s*user(.*?)\]/\.LIST USER "$1"/){
 			push(@elementStack, ".LIST OFF");}
 }
 
@@ -569,7 +645,7 @@ sub replaceNewPage(){
 }
 
 sub replaceBlankPage(){
-		#$_ =~ s/\[chapter\]/\.HEADING 1/;
+		$_ =~ s/\[blankpage\]/\.BLANKPAGE/;
 }
 
 sub replaceBlankline{
