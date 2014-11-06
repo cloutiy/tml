@@ -30,4 +30,4 @@ Finally, if you want to turn the resulting .mom file into a pdf:
 
 1. I am not really a programmer, this is all one big experiment. If you can improve on my code...please do!
 2. This is still just a prototype...use at your own risk!
-3. Don't feed tha manimals.
+
