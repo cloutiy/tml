@@ -1,3 +1,11 @@
+# November 5, 2014
+V. 1.03
+## Added 
+- `[chapter]`
+- `[chapter 1]`
+- `[chapter]` "Title"
+- `[chapter 1]` "Title"
+
 # October 4, 2014
 V. 1.02
 ## Fixed
