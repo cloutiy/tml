@@ -59,6 +59,7 @@ Nov 5, 2014
 ```
 
 ### FONTS
+```
 {font-family: avant-garde}
 {font-family: avantgarde}
 {font-family: avant-garde}
@@ -74,8 +75,10 @@ Nov 5, 2014
 {font-family: zapf-chancery}
 {font-family: zapf}
 {font-family: my-groff-font}
-		
+```		
+
 ### FONT STYLE
+```
 {font-style: roman}
 {font-style: r}
 {font-style: italic}
@@ -87,33 +90,43 @@ Nov 5, 2014
 {font-style: bi}
 {font-style: smallcaps}
 {font-style: sc}
-		
+```
+
 ### FONT SIZE
-{font-size: x}
+`{font-size: x}`
 
 ### LINE SPACING/LEADING
+```
 {leading: 10/13} => sets PT_SIZE to 10 and .LS to 13 at same time
 {autoleading: [factor of] 2}  => not implemented yet. 
 {line-spacing: 13}
+```
 
 ### JUSTIFICATION 
+```
 {justfication:left}
 {justfication:right}
 {justification:center}
 {justification:full}
+```
 
 ### PARAGRAPHS
+```
 {paragraph-indent: nx}
 {paragraph-space: nx}
 {line-length: 3i}
+```
 
 ### KERNING/LIGATURES
+```
 {kerning-on}
 {kerning-off}
 {ligatures-on}
 {ligatures-off}
+```
 
 ### HYPHENATION
+```
 {hyphenation-on}
 {hyphenation-off}
 {hyphenationlanguage:spanish} => not implemeted yet
@@ -121,8 +134,10 @@ Nov 5, 2014
 {hyphenation-margin: x}
 {hyphenation-space: x}
 {hyphenation-defaults}
+```
 
 ### SMARTQUOTES
+```
 {smartquotes-on}
 {smartquotes-off}
 {smartquotes: danish}
@@ -144,16 +159,21 @@ Nov 5, 2014
 {smartquotes: no}
 {smartquotes: pt}
 {smartquotes: sv}
+```
 
 ## LANGUAGE
+```
 {language:spanish} => (not implemented yet) maybe make it so that language also determines hyphenation language automatically.
-
+```
 ## PRINT STYLE
+```
 {typeset}
 {typewrite}
 {typewrite: singlespace}
+```
 
 ### METADATA TAGS
+```
 [author]
 [title]
 [doctitle]
@@ -164,8 +184,10 @@ Nov 5, 2014
 [covertitle]
 [doccovertitle]
 [pdftitle]
+```
 
 ### DOCUMENT ELEMENT TAGS
+```
 [include] path-to-external-file.xxx
 [start]
 [tableofcontents]
@@ -199,9 +221,16 @@ Nov 5, 2014
 [blankpage]
 [break] / [br] / [linebreak]
 [finis]
+```
 
 ## COMMANDS
-### Pseudo
+```
+<bold<...> / <bd<...> / <b<...>
+<italic<...> / <it<...> / <i<...>
+<smallcaps<...> / <sc<...>
+<uppercase<...> / <caps<...> / <uc<...>
+<lowercase<...> / <lc<...>
+
 <bolder x<...>
 <slant x<...>
 <condense x<...>
@@ -211,105 +240,106 @@ Nov 5, 2014
 <forward x<...>
 <back x<...>
 <caps -1<...>
-
+```
 ### Size
+```
 <+n<...>
 <-n<...>
 <n<...>
 <size n<...>
-
-<bold<...> / <bd<...> / <b<...>
-<italic<...> / <it<...> / <i<...>
-<smallcaps<...> / <sc<...>
-<uppercase<...> / <caps<...> / <uc<...>
-<lowercase<...> / <lc<...>
-
+```
 
 ## Kerning
-<-x> / <+n> => T<-2>he trees turned to dust.
+`<-x> / <+n>` => `T<-2>he trees turned to dust.`
 
 ## Alignment
+```
 <left<...>
 <right<...>
 <center<...>
+```
 
 ## COMMENTS:
-# => the # symbol denotes a comment.  replaced with \#
+`#` => the # symbol denotes a comment.  
 
 ## SPECIAL CHARS
-|en| / .. - .. 
-|em| / ..--.. 
+### En/EM Dashes
+`|en|` / .. - .. 
+`|em|` / ..--.. 
 
 ### Plus/minus (arithmetic) \[+-] 
-|+/-|
+`|+/-|`
 
 ### Subtract (arithmetic) \[mi]
-|-|
+`|-|`
 
 ### Multiply (arithmetic) \[mu]
-|x|
+`|x|`
 
 ### Divide (arithmetic) \[di]
-|/| 
+`|/|` 
 
 ### Left double-quote \[lq] 
-|lq|
+`|lq|`
 
 ### Right double-quote \[rq]
-|rq|
+`|rq|`
 
 ### Open (left) single-quote \[oq]
-|oq|
+`|oq|`
 
 ### Close (right) single-quote \[oq]
-|oq|
+`|oq|`
 
 ### Bullet \[bu] 
-|bu| / [bullet]
+`|bu| / [bullet]`
 
 ### Ballot box \[sq]
+```
 |sq|
 |square|
+```
 
 ### One-quarter \[14] 
-|1/4|
+`|1/4|`
 
 ### One-half \[12] 
-|1/2|
+`|1/2|`
 
 ### Three-quarters \[34] 
-|3/4|
+`|3/4|`
 
 ### Degree sign \[de] 
-|de| / [deg] / [degree]
+`|de| / [deg] / [degree]`
 
 ### Dagger \[dg] 
-|dg| / [dagger]
+`|dg| / [dagger]`
 
 ### Foot mark \[fm] 
-|fm| / [footmark]
+`|fm| / [footmark]`
 
 ### Cent sign \[ct] 
-|ct| /[cent]
+`|ct| /[cent]`
 
 ### Registered trademark \[rg] 
-|rg| / |tm| / [trademark]
+`|rg| / |tm| / [trademark]`
 
 ### Copyright \[co] 
-|co| / [copyright]
+`|co| / [copyright]`
 
 ### Section symbol \[se]
-|se] 
+`|se]` 
 
 ### Foot and Inch \[foot] \[inch]
-|'|
-|"|
+`|'|`
+`|"|`
 
 ### Braces and brackets (curly, square and greater/less than symbols have special significance in TML. enclosing them within [] treats them as tags
+```
 |{| / |lc|
 |}| / |rc| 
 |<| / |lt| 
 |>| / |gt| 
 |[| / |ls| 
 |]| / |rs| 
-
+```
