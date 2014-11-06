@@ -1,7 +1,4 @@
 # Typesetting Markup Language
-
-Lightweight Markup languages like Markdown help to increase productivity and insulate users of the technical complexity of their target platforms.
-
 Although Markdown offers a simple way of handling structural elements of a document (headings, blockquotes, lists etc..), it does not provide a way to address stylistic elements of a document, such as:
 
 - font manipulation (font family, size, color) 
