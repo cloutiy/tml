@@ -162,9 +162,9 @@ Nov 5, 2014
 ```
 
 ## LANGUAGE
-```
-{language:spanish} => (not implemented yet) maybe make it so that language also determines hyphenation language automatically.
-```
+`{language: spanish}`
+(not implemented yet) maybe make it so that language also determines hyphenation language automatically.
+
 ## PRINT STYLE
 ```
 {typeset}
@@ -260,81 +260,81 @@ Nov 5, 2014
 ```
 
 ## COMMENTS:
-`#` => the # symbol denotes a comment.  
+`#`   
 
 ## SPECIAL CHARS
 ### En/EM Dashes
-`|en|` / .. - .. 
-`|em|` / ..--.. 
+`|en|` / `.. - ..` 
+`|em|` / `..--..` 
 
-### Plus/minus (arithmetic) \[+-] 
+### Plus/minus (arithmetic)
 `|+/-|`
 
-### Subtract (arithmetic) \[mi]
+### Subtract (arithmetic)
 `|-|`
 
-### Multiply (arithmetic) \[mu]
+### Multiply (arithmetic)
 `|x|`
 
-### Divide (arithmetic) \[di]
+### Divide (arithmetic)
 `|/|` 
 
-### Left double-quote \[lq] 
+### Left double-quote 
 `|lq|`
 
-### Right double-quote \[rq]
+### Right double-quote
 `|rq|`
 
-### Open (left) single-quote \[oq]
+### Open (left) single-quote
 `|oq|`
 
-### Close (right) single-quote \[oq]
+### Close (right) single-quote
 `|oq|`
 
 ### Bullet \[bu] 
 `|bu| / [bullet]`
 
-### Ballot box \[sq]
+### Ballot box
 ```
 |sq|
 |square|
 ```
 
-### One-quarter \[14] 
+### One-quarter
 `|1/4|`
 
-### One-half \[12] 
+### One-half 
 `|1/2|`
 
-### Three-quarters \[34] 
+### Three-quarters 
 `|3/4|`
 
-### Degree sign \[de] 
+### Degree sign 
 `|de| / [deg] / [degree]`
 
-### Dagger \[dg] 
+### Dagger 
 `|dg| / [dagger]`
 
-### Foot mark \[fm] 
+### Foot mark 
 `|fm| / [footmark]`
 
-### Cent sign \[ct] 
+### Cent sign 
 `|ct| /[cent]`
 
-### Registered trademark \[rg] 
+### Registered trademark 
 `|rg| / |tm| / [trademark]`
 
-### Copyright \[co] 
+### Copyright 
 `|co| / [copyright]`
 
-### Section symbol \[se]
+### Section symbol
 `|se]` 
 
-### Foot and Inch \[foot] \[inch]
+### Foot and Inch
 `|'|`
 `|"|`
 
-### Braces and brackets (curly, square and greater/less than symbols have special significance in TML. enclosing them within [] treats them as tags
+### Braces and brackets
 ```
 |{| / |lc|
 |}| / |rc| 
