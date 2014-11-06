@@ -3,6 +3,7 @@ Nov 5, 2014
 
 ## PAGE LAYOUT
 ### Page sizes by name
+```
 {paper-size: letter}
 {paper-size: legal}
 {paper-size: statement}
@@ -38,20 +39,24 @@ Nov 5, 2014
 {page-size: b4}
 {page-size: b5}
 {page-size: 6x9}
-
+```
 ### Page width and height
+```
 {page-width: nx}
 {page-height: nx}
 		
 {paper-width: nx}
 {paper-height: nx}
+```
 
 ### MARGINS
+```
 {margin-left: nx}
 {margin-right: nx}
 {margin-top: nx}
 {margin-bottom: nx}
 {margins: nx nx nx nx}
+```
 
 ### FONTS
 {font-family: avant-garde}
