@@ -223,7 +223,7 @@ Nov 5, 2014
 [finis]
 ```
 
-## COMMANDS
+## INLINE FORMATTING COMMANDS
 ```
 <bold<...> / <bd<...> / <b<...>
 <italic<...> / <it<...> / <i<...>
