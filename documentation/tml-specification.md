@@ -1,5 +1,5 @@
 # TML Specification v.1.03
-### Nov 5, 2014
+Nov 5, 2014
 
 ## PAGE LAYOUT
 ### Page sizes by name
