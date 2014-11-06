@@ -5,6 +5,8 @@ V. 1.03
 - `[chapter 1]`
 - `[chapter]` "Title"
 - `[chapter 1]` "Title"
+- `[chapter Two]` "Title"
+- `[chapter IV]` "Title"
 
 # October 4, 2014
 V. 1.02
