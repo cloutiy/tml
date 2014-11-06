@@ -16,11 +16,11 @@ Well, first you will need to have Peter Schaffter's MOM macros installed [MOM ma
 
 Then you can run:
 
-`perl tml2mom.pl showcase.tml`
+`perl tml.pl showcase.tml`
 
 This will spit stuff out on the screen. If you want the output to be saved to a file, do:
 
-`perl tml2mom.pl showcase.tml > showcase.mom`
+`perl tml.pl showcase.tml > showcase.mom`
 
 Finally, if you want to turn the resulting .mom file into a pdf:
 
