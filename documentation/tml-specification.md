@@ -1,7 +1,8 @@
-(TML Specification v.1.03)
+# TML Specification v.1.03
+### Nov 5, 2014
 
-# PAGE LAYOUT
-## Page sizes by name
+## PAGE LAYOUT
+### Page sizes by name
 {paper-size: letter}
 {paper-size: legal}
 {paper-size: statement}
@@ -38,21 +39,21 @@
 {page-size: b5}
 {page-size: 6x9}
 
-## Page width and height
+### Page width and height
 {page-width: nx}
 {page-height: nx}
 		
 {paper-width: nx}
 {paper-height: nx}
 
-## MARGINS
+### MARGINS
 {margin-left: nx}
 {margin-right: nx}
 {margin-top: nx}
 {margin-bottom: nx}
 {margins: nx nx nx nx}
 
-## FONTS
+### FONTS
 {font-family: avant-garde}
 {font-family: avantgarde}
 {font-family: avant-garde}
@@ -69,7 +70,7 @@
 {font-family: zapf}
 {font-family: my-groff-font}
 		
-## FONT STYLE
+### FONT STYLE
 {font-style: roman}
 {font-style: r}
 {font-style: italic}
@@ -82,32 +83,32 @@
 {font-style: smallcaps}
 {font-style: sc}
 		
-## FONT SIZE
+### FONT SIZE
 {font-size: x}
 
-## LINE SPACING/LEADING
+### LINE SPACING/LEADING
 {leading: 10/13} => sets PT_SIZE to 10 and .LS to 13 at same time
 {autoleading: [factor of] 2}  => not implemented yet. 
 {line-spacing: 13}
 
-## JUSTIFICATION 
+### JUSTIFICATION 
 {justfication:left}
 {justfication:right}
 {justification:center}
 {justification:full}
 
-## PARAGRAPHS
+### PARAGRAPHS
 {paragraph-indent: nx}
 {paragraph-space: nx}
 {line-length: 3i}
 
-## KERNING/LIGATURES
+### KERNING/LIGATURES
 {kerning-on}
 {kerning-off}
 {ligatures-on}
 {ligatures-off}
 
-## HYPHENATION
+### HYPHENATION
 {hyphenation-on}
 {hyphenation-off}
 {hyphenationlanguage:spanish} => not implemeted yet
@@ -116,7 +117,7 @@
 {hyphenation-space: x}
 {hyphenation-defaults}
 
-## SMARTQUOTES
+### SMARTQUOTES
 {smartquotes-on}
 {smartquotes-off}
 {smartquotes: danish}
@@ -139,15 +140,15 @@
 {smartquotes: pt}
 {smartquotes: sv}
 
-# LANGUAGE
+## LANGUAGE
 {language:spanish} => (not implemented yet) maybe make it so that language also determines hyphenation language automatically.
 
-# PRINT STYLE
+## PRINT STYLE
 {typeset}
 {typewrite}
 {typewrite: singlespace}
 
-## METADATA TAGS
+### METADATA TAGS
 [author]
 [title]
 [doctitle]
@@ -159,7 +160,7 @@
 [doccovertitle]
 [pdftitle]
 
-## DOCUMENT ELEMENT TAGS
+### DOCUMENT ELEMENT TAGS
 [include] path-to-external-file.xxx
 [start]
 [tableofcontents]
@@ -222,13 +223,10 @@
 ## Kerning
 <-x> / <+n> => T<-2>he trees turned to dust.
 
-# Alignment
+## Alignment
 <left<...>
 <right<...>
 <center<...>
-
-#
-
 
 ## COMMENTS:
 # => the # symbol denotes a comment.  replaced with \#
