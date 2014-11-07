@@ -7,7 +7,7 @@ Chapter titles do not need to be enlcosed in "Quotations":
 
 will get converted to:
 
-`[chapter One] "The Happpening"`
+`[chapter One] "The Happening"`
 
 Also chapter titles can be specified on the next line:
 ```
