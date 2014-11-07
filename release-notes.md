@@ -2,6 +2,7 @@
 V. 1.0.4
 ## Added 
 Chapter titles do not need to be enlcosed in "Quotations":
+
 `[chapter One] The Happening`
 
 will get converted to:
