@@ -16,7 +16,7 @@ The Happening
 ```
 and 
 
-`[chapter One] The Happening`
+`[chapter] The Happening`
 
 Are both the same for the interpreter.
 
