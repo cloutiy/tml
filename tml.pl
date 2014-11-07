@@ -1,20 +1,15 @@
-# V. 1.03
+# V. 1.04
 # Release notes:
 # Fixed
 #~~~~~~~
 #
 # Added
 #~~~~~~~
-# [chapter]
-# [chapter 1]
-# [chapter] "Title"
-# [chapter 1] "Title"
+
 
 # Todo
 #~~~~~
-# - modify regular expressions to allow spaces and or hyphens in {...}, [....] and <...<
-# - add {align:left|right|center} for non-filling alignment of text
-# - add synonyms for {justification:...} => {justify:...} and {quad:...}
+
 #
 #:::::::::::::::::: VARIABLES ::::::::::::::::::
 @elementStack=();	#Keeps track of what the current element tag is
@@ -47,7 +42,8 @@ sub loadDefinitions {
 		}
 		last; #exit the for loop
 	}
-	splice(@tmlfile, $definitionsStartIdx, $definitionsEndIdx); # Remove the definitions section from @tmlfile
+	# Remove the definitions section from @tmlfile
+	splice(@tmlfile, $definitionsStartIdx, $definitionsEndIdx); 
 }
 
 foreach my $key ( keys %definitions )
@@ -391,36 +387,52 @@ sub replaceEpigraphBlock {
 }
 
 sub replaceChapter {
+# IF [chapter] or [chapter xxx] appears on aline by itself, prepend [chapter] or [chapter xxx] to the start of the next line
+if (m/\[chapter\]\s*\n/) { $tmlfile[$currentElement+1] = "[chapter] " . $tmlfile[$currentElement+1]; $_ = "#\n";}
+if (m/\[chapter\s+(.+)\]\s*\n/) { $tmlfile[$currentElement+1] = "[chapter " . $1 ."] " . $tmlfile[$currentElement+1]; $_ = "#\n";}
+
 # IF match [chapter], check if it's the first time. If yes do not put .COLLATE
 if (m/\[chapter/) {    
     if ($firstChapter eq "true") {
         $firstChapter = "false";
         #[chapter 1] "Title"
-        $_ =~ s/\[chapter (.+)\]\s*(".*?")/\.CHAPTER $1\n\.CHAPTER_TITLE $2\n\.START/;
+        $_ =~ s/\[chapter\s+(.+)\]\s*(".*?")/\.CHAPTER $1\n\.CHAPTER_TITLE $2\n\.START/;
+        #[chapter 1] Title
+        $_ =~ s/\[chapter\s+(.+)\]\s+([^"].+[^"])\s*\n/\.CHAPTER $1\n\.CHAPTER_TITLE "$2"\n\.START\n/;
         #[chapter 1]
-        $_ =~ s/\[chapter (.+)\]/\.CHAPTER $1\n\.CHAPTER_TITLE\n\.START/;
+        $_ =~ s/\[chapter\s+(.+)\]/\.CHAPTER $1\n\.CHAPTER_TITLE\n\.START/;
         #[chapter] "Title"
-        $_ =~ s/\[chapter\] (.+)/\.CHAPTER_TITLE $1\n\.START/;
+        $_ =~ s/\[chapter\]\s*(".*?")/\.CHAPTER_TITLE $1\n\.START/;
+        #[chapter] Title
+        $_ =~ s/\[chapter\]\s+([^"].+[^"])\s*\n/\.CHAPTER\n\.CHAPTER_TITLE "$1"\n\.START\n/;
         #[chapter]
 		$_ =~ s/\[chapter\]/\.CHAPTER_TITLE\n\.START/;
 		
-        $_ =~ s/\[chap (.+)\] (.+)/\.CHAPTER $1\n\.CHAPTER_TITLE $2\n\.START/;
-        $_ =~ s/\[chap (.+)\]/\.CHAPTER $1\n\.CHAPTER_TITLE\n\.START/;
-        $_ =~ s/\[chap\] (.+)/\.CHAPTER_TITLE $1\n\.START/;
+        $_ =~ s/\[chap\s*(.+)\]\s*(.+)/\.CHAPTER $1\n\.CHAPTER_TITLE $2\n\.START/;
+        $_ =~ s/\[chap\s*(.+)\]/\.CHAPTER $1\n\.CHAPTER_TITLE\n\.START/;
+        $_ =~ s/\[chap\]\s*(.+)/\.CHAPTER_TITLE $1\n\.START/;
         $_ =~ s/\[chap\]/\.CHAPTER_TITLE\n\.START/;
     } else { 
         #[chapter 1] "Title"
-        $_ =~ s/\[chapter (.+)\]\s*(".*?")/\.COLLATE\n\.CHAPTER $1\n\.CHAPTER_TITLE $2\n\.START/;
+        $_ =~ s/\[chapter\s+(.+)\]\s*(".*?")/\.COLLATE\n\.CHAPTER $1\n\.CHAPTER_TITLE $2\n\.START/;
+        #[chapter 1] Title
+        $_ =~ s/\[chapter\s+(.+)\]\s+([^"].+[^"])\s*\n/\.CHAPTER $1\n\.CHAPTER_TITLE "$2"\n\.START\n/;
         #[chapter 1]
-        $_ =~ s/\[chapter (.+)\]/\.COLLATE\n\.CHAPTER $1\n\.CHAPTER_TITLE\n.START/;
+        $_ =~ s/\[chapter\s+(.+)\]/\.COLLATE\n\.CHAPTER $1\n\.CHAPTER_TITLE\n.START/;
         #[chapter] "Title"
-        $_ =~ s/\[chapter\] (.+)/\.COLLATE\n\.CHAPTER_TITLE $1\n\.START/;
+        $_ =~ s/\[chapter\]\s*(".*?")/\.CHAPTER_TITLE $1\n\.START/;
+        #[chapter] Title
+        $_ =~ s/\[chapter\]\s+([^"].+[^"])\s*\n/\.CHAPTER\n\.CHAPTER_TITLE "$1"\n\.START\n/;
         #[chapter]
         $_ =~ s/\[chapter\]/\.COLLATE\n\.CHAPTER_TITLE\n\.START/;
         
-        $_ =~ s/\[chap (.+)\] (.+)/\.COLLATE\n\.CHAPTER $1\n\.CHAPTER_TITLE $2\n\.START/;
-        $_ =~ s/\[chap (.+)\]/\.COLLATE\n\.CHAPTER $1\n\.CHAPTER_TITLE\n\.START/;
-        $_ =~ s/\[chap\] (.+)/\.COLLATE\n\.CHAPTER_TITLE $1\n\.START/;
+        $_ =~ s/\[chap\s+(.+)\]\s*(".*?")/\.COLLATE\n\.CHAPTER $1\n\.CHAPTER_TITLE $2\n\.START/;
+        #[chapter 1] Title
+        $_ =~ s/\[chap\s+(.+)\]\s+([^"].+[^"])\s*\n/\.CHAPTER $1\n\.CHAPTER_TITLE "$2"\n\.START\n/;
+        $_ =~ s/\[chap\s+(.+)\]/\.COLLATE\n\.CHAPTER $1\n\.CHAPTER_TITLE\n\.START/;
+        $_ =~ s/\[chap\]\s+(".+")/\.COLLATE\n\.CHAPTER_TITLE $1\n\.START/;
+        #[chapter] Title
+        $_ =~ s/\[chap\]\s+([^"].+[^"])\s*\n/\.CHAPTER\n\.CHAPTER_TITLE "$1"\n\.START\n/;
         $_ =~ s/\[chap\]/\.COLLATE\n\.CHAPTER_TITLE\n\.START/;
     }
 }
