@@ -1,5 +1,21 @@
+# November 6, 2014
+V. 1.0.4
+## Added 
+Chapter titles do not need to be enlcosed in "Quotations":
+`[chapter One] The Happening`will get converted to:
+`[chapter One] "The Happpening"`
+
+Also chapter titles can be specified on the next line:
+```
+[chapter]
+The Happening
+```
+and 
+`[chapter One] The Happening`
+Are both the same for the interpreter.
+
 # November 5, 2014
-V. 1.03
+V. 1.0.3
 ## Added 
 - `[chapter]`
 - `[chapter 1]`
@@ -9,7 +25,7 @@ V. 1.03
 - `[chapter IV]` "Title"
 
 # October 4, 2014
-V. 1.02
+V. 1.0.2
 ## Fixed
 - `{typeset}` is set as default, unless `{typewrite}` or `{typewrite:singlespace}` is specified => required by MOM
 - `[tableofcontents]` after `[start]` => inserts `.AUTO_RELOCATE_TOC` before `.START` as required by MOM to have TOC at beginning.
