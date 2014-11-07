@@ -2,7 +2,10 @@
 V. 1.0.4
 ## Added 
 Chapter titles do not need to be enlcosed in "Quotations":
-`[chapter One] The Happening`will get converted to:
+`[chapter One] The Happening`
+
+will get converted to:
+
 `[chapter One] "The Happpening"`
 
 Also chapter titles can be specified on the next line:
@@ -11,7 +14,9 @@ Also chapter titles can be specified on the next line:
 The Happening
 ```
 and 
+
 `[chapter One] The Happening`
+
 Are both the same for the interpreter.
 
 # November 5, 2014
