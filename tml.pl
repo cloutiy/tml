@@ -69,7 +69,8 @@ foreach $_ (@tmlfile){
 	replaceHyphenation();
 	replaceSmartquotes();
 	replaceToc();
-	replaceChapter(); 
+	replaceChapter();
+	replaceChaptersOnOddPages();
 	replaceEpigraph();
 	replaceEpigraphBlock();
 	replaceSection();
@@ -437,7 +438,9 @@ if (m/\[chapter/) {
     }
 }
 }
-
+sub replaceChaptersOnOddPages{
+    $_ =~ s/{chapters-on-odd-pages}/\.rn COLLATE COLLATE-OLD\n\.de COLLATE\n\. if o \.BLANKPAGE 1 DIVIDER\n\. COLLATE-OLD\n\.\./;
+}
 sub replaceSection {
 		$_ =~ s/\[section\]/\.HEADING 1/;
 		$_ =~ s/\[sec\]/\.HEADING 1/;
