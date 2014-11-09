@@ -172,7 +172,7 @@ Nov 5, 2014
 {typewrite: singlespace}
 ```
 
-## Chapters
+## CHAPTERS
 ```
 {chapters-on-odd-pages}
 ```
