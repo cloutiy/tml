@@ -172,6 +172,11 @@ Nov 5, 2014
 {typewrite: singlespace}
 ```
 
+## Chapters
+```
+{chapters-on-odd-pages}
+```
+
 ### METADATA TAGS
 ```
 [author]
