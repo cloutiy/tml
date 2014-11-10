@@ -43,9 +43,8 @@ Nov 9, 2014
 ### Page width and height
 ```
 {page-width: nx}
-{page-height: nx}
-		
 {paper-width: nx}
+{page-height: nx}
 {paper-height: nx}
 ```
 ## RECTO VERSO / DOUBLE SIDED
