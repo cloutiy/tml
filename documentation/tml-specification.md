@@ -1,5 +1,5 @@
 # TML Specification v.1.0.4
-Nov 5, 2014
+Nov 9, 2014
 
 ## PAGE LAYOUT
 ### Page sizes by name
@@ -58,7 +58,8 @@ Nov 5, 2014
 {margins: nx nx nx nx}
 ```
 
-### FONTS
+## FONTS
+### FONT FAMILY
 ```
 {font-family: avant-garde}
 {font-family: avantgarde}
@@ -102,22 +103,60 @@ Nov 5, 2014
 {line-spacing: 13}
 ```
 
-### JUSTIFICATION 
+## JUSTIFICATION 
+### Left
 ```
-{justfication:left}
-{justfication:right}
-{justification:center}
-{justification:full}
+{justification: left}
+{justify-left}
+{quad-left}
+{left-justified}
 ```
-
-### PARAGRAPHS
+### Right	
+```
+{justification: right}
+{justify-right}
+{quad-right}
+{right-justified}
+```
+### Center	
+```
+{justification: center}
+{justify-center}
+{quad-center}
+{center-justified}
+```
+### Full	
+```
+{justification: full}
+{justify-full}
+{justify}
+{justified}
+{quad-justified}
+{full-justified}
+```
+## HEADERS
+## Headers
+```
+{headers-plain}
+{plain-headers}
+{header-font-family: font-family}
+{header-font-family-left: font-family}
+{header-font-family-right: font-family}
+{header-font-family-center: font-family}
+{header-font-style-left: font-style}
+{header-font-style-right: font-style}
+{header-font-style-center: font-style}
+{header-string-left: Header String}
+{header-string-right: Header String}
+{header-string-center: Header String}
+```
+## PARAGRAPHS
 ```
 {paragraph-indent: nx}
 {paragraph-space: nx}
 {line-length: 3i}
 ```
-
-### KERNING/LIGATURES
+## KERNING/LIGATURES
 ```
 {kerning-on}
 {kerning-off}
@@ -125,18 +164,18 @@ Nov 5, 2014
 {ligatures-off}
 ```
 
-### HYPHENATION
+## HYPHENATION
 ```
 {hyphenation-on}
 {hyphenation-off}
-{hyphenationlanguage:spanish} => not implemeted yet
+{hyphenation-language: spanish} 
 {hyphenation-max-lines: x}
 {hyphenation-margin: x}
 {hyphenation-space: x}
 {hyphenation-defaults}
 ```
 
-### SMARTQUOTES
+## SMARTQUOTES
 ```
 {smartquotes-on}
 {smartquotes-off}
@@ -162,8 +201,7 @@ Nov 5, 2014
 ```
 
 ## LANGUAGE
-`{language: spanish}`
-(not implemented yet) maybe make it so that language also determines hyphenation language automatically.
+`{language: spanish}` => Sets both hypenation-language and smartquotes to spanish
 
 ## PRINT STYLE
 ```
@@ -177,7 +215,7 @@ Nov 5, 2014
 {chapters-on-odd-pages}
 ```
 
-### METADATA TAGS
+## METADATA TAGS
 ```
 [author]
 [title]
@@ -191,7 +229,7 @@ Nov 5, 2014
 [pdftitle]
 ```
 
-### DOCUMENT ELEMENT TAGS
+## DOCUMENT ELEMENT TAGS
 ```
 [include] path-to-external-file.xxx
 [start]
