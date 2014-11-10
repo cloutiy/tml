@@ -48,7 +48,11 @@ Nov 9, 2014
 {paper-width: nx}
 {paper-height: nx}
 ```
-
+## RECTO VERSO / DOUBLE SIDED
+```
+{double-sided}
+{recto-verso}
+```
 ### MARGINS
 ```
 {margin-left: nx}
