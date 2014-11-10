@@ -238,8 +238,10 @@ Nov 9, 2014
 [epigraph]
 [epigraphblock]
 [chapter] "Title"
-[chapter 1]
-[chapter One] "Title"
+[chapter] Title => The chapter title doesn't need to be enclosed in quotes
+[chapter]\nTitle => The chapter title can be entered on the next line
+[chapter 1] => Sets the chapter number to 1
+[chapter One] "Title" => Sets the chapter number to One and the title to the string Title
 [h1]/[heading1]/[section]/[sec]
 [h2]/[heading2]/[subsection]/[subsec]
 [h3]/[heading3]/[subsubsection]/[subsubsec]
