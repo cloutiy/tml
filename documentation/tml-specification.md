@@ -158,15 +158,16 @@ Nov 9, 2014
 ```
 ## KERNING/LIGATURES
 ```
-{kerning-on}
+{kerning-on} => kerning is on by default
 {kerning-off}
-{ligatures-on}
+`<-x> / <+n> => T<-2>he trees turned to dust.
+{ligatures-on} => ligatures are on by default
 {ligatures-off}
 ```
 
 ## HYPHENATION
 ```
-{hyphenation-on}
+{hyphenation-on} => hyphenation is on by default
 {hyphenation-off}
 {hyphenation-language: spanish} 
 {hyphenation-max-lines: x}
@@ -177,7 +178,7 @@ Nov 9, 2014
 
 ## SMARTQUOTES
 ```
-{smartquotes-on}
+{smartquotes-on} => smartquotes are on by default
 {smartquotes-off}
 {smartquotes: danish}
 {smartquotes: german}
@@ -205,14 +206,14 @@ Nov 9, 2014
 
 ## PRINT STYLE
 ```
-{typeset}
+{typeset} => typeset is the default
 {typewrite}
 {typewrite: singlespace}
 ```
 
 ## CHAPTERS
 ```
-{chapters-on-odd-pages}
+{chapters-on-odd-pages} => starts new chapters on even numbered pages
 ```
 
 ## METADATA TAGS
