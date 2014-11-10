@@ -160,7 +160,7 @@ Nov 9, 2014
 ```
 {kerning-on} *kerning is on by default
 {kerning-off}
-`<-x> / <+n>  (ex.: T<-2>he trees turned to dust.)
+<-x> / <+n>  (ex.: T<-2>he trees turned to dust.)
 {ligatures-on} *ligatures are on by default
 {ligatures-off}
 ```
