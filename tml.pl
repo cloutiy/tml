@@ -1,3 +1,4 @@
+#!/usr/bin/env perl 
 # V. 1.04
 # Release notes:
 # Fixed
@@ -55,7 +56,7 @@ foreach my $key ( keys %definitions )
 # Go through each line of the input file and translate the TML Markup into Groff
 $currentElement = 0; # Just a counter
 foreach $_ (@tmlfile){
-	includeFiles();
+#	includeFiles(); # Not working....will have to work on this later.
 	replaceMetadata();
 	replacePrintStyle();
 	replacePageLayout();
@@ -66,8 +67,10 @@ foreach $_ (@tmlfile){
 	replaceParagraphLayout();
 	replaceKerning();
 	replaceLigatures();
+	replaceLanguage();
 	replaceHyphenation();
 	replaceSmartquotes();
+	replaceHeaders();
 	replaceToc();
 	replaceChapter();
 	replaceChaptersOnOddPages();
@@ -114,12 +117,24 @@ foreach $_ (@tmlfile){print $_;}
 
 #::::::::::::::::::::::::: FUNCTIONS :::::::::::::::::::::::::::::
 sub includeFiles(){
-	$/ = undef;
-	if ($_ =~ m/\[include\]\s*?(.*?)\n/){;
-		open(FILE, $1) || die("Could not open $1\n");
-		$_ = <FILE>;
+    #Note: I think files will need to be loaded into an array and inserted into  @tmlfile array for things to work properly
+	#$/ = undef;
+	# If [include] filename is encountered...open the file, load its contents into the main TML file
+	if ($_ =~ m/\[include\]\s*(.*?)\n/){
+		open(FILE, $1) || die("Could not open $1 on line $_\n");
+    #    $_ = <FILE>;
+    #    print "Opening $1";
+		@includefile = <FILE>;
 		close(FILE);
 	}
+	#foreach $_ (@includefile){print $_;}
+	#print $includefile[1];
+	$_ = "";
+	$from = $currentElement;
+	$to = @includefile;
+	print "Insert at $from for a length of length $to\n";
+	splice(@tmlfile, $from, $to, @includefile);
+	#print $#includefile;
 }
 
 sub replaceMetadata {
@@ -228,6 +243,7 @@ sub replaceFonts{
 		$_ =~ s/{font-family:\s*times}/\.FAMILY T/;
 		$_ =~ s/{font-family:\s*zapf-chancery}/\.FAMILY ZCM/;
 		$_ =~ s/{font-family:\s*zapf}/\.FAMILY ZCM/;
+		$_ =~ s/{font-family:\s*(.+)}/\.FAMILY $1/;
 		
 		#{fontstyle:}
 		$_ =~ s/{font-style:\s*roman}/\.FT R/;
@@ -263,19 +279,28 @@ sub replaceJustification{
 	#{justfication:left}
 	$_ =~ s/{justification:\s*left}/\.QUAD LEFT/;
 	$_ =~ s/{justify-left}/\.QUAD LEFT/;
+	$_ =~ s/{quad-left}/\.QUAD LEFT/;
+	$_ =~ s/{left-justified}/\.QUAD LEFT/;
 	
 	#{justfication:right}
 	$_ =~ s/{justification:\s*right}/\.QUAD RIGHT/;
 	$_ =~ s/{justify-right}/\.QUAD RIGHT/;
+	$_ =~ s/{quad-right}/\.QUAD RIGHT/;
+	$_ =~ s/{right-justified}/\.QUAD RIGHT/;
 	
 	#{justification:center}
 	$_ =~ s/{justification:\s*center}/\.QUAD CENTER/;
 	$_ =~ s/{justify-center}/\.QUAD CENTER/;
+	$_ =~ s/{quad-center}/\.QUAD CENTER/;
+	$_ =~ s/{center-justified}/\.QUAD CENTER/;
 	
 	#{justification:full}
 	$_ =~ s/{justification:\s*full}/\.QUAD JUSTIFIED/;
 	$_ =~ s/{justify-full}/\.QUAD JUSTIFIED/;
 	$_ =~ s/{justify}/\.QUAD JUSTIFIED/;
+	$_ =~ s/{justified}/\.QUAD JUSTIFIED/;
+	$_ =~ s/{quad-justified}/\.QUAD JUSTIFIED/;
+	$_ =~ s/{full-justified}/\.QUAD JUSTIFIED/;
 }
 
 sub replaceParagraphLayout{
@@ -328,6 +353,9 @@ sub replaceHyphenation{
 	$_ =~ s/{hyphenation-off}/\.HY OFF/;
 	
 	#{hyphenationlanguage:spanish}
+	$_ =~ s/{hyphenation-language:\s*spanish}/\.hla es\n\.hpf hyphen\.es/;
+	$_ =~ s/{hyphenation-language:\s*es}/\.hla es\n\.hpf hyphen\.es/;
+	
 	#{hyphenationmax:}
 	$_ =~ s/{hyphenation-max-lines:\s*(.+)}/\.HY LINES $1/;
 	$_ =~ s/{hyphenation-maxlines:\s*(.+)}/\.HY LINES $1/;
@@ -341,6 +369,8 @@ sub replaceHyphenation{
 	#{hyphenation:reset}
 	$_ =~ s/{hyphenation:\s*reset}/\.HY DEFAULT/;
 	$_ =~ s/{hyphenation-reset}/\.HY DEFAULT/;
+	$_ =~ s/{hyphenation:\s*defaults}/\.HY DEFAULT/;
+    $_ =~ s/{hyphenation-defaults}/\.HY DEFAULT/;
 }
 
 sub replaceSmartquotes{
@@ -438,9 +468,7 @@ if (m/\[chapter/) {
     }
 }
 }
-sub replaceChaptersOnOddPages{
-    $_ =~ s/{chapters-on-odd-pages}/\.rn COLLATE COLLATE-OLD\n\.de COLLATE\n\. if o \.BLANKPAGE 1 DIVIDER\n\. COLLATE-OLD\n\.\./;
-}
+
 sub replaceSection {
 		$_ =~ s/\[section\]/\.HEADING 1/;
 		$_ =~ s/\[sec\]/\.HEADING 1/;
@@ -668,6 +696,26 @@ sub replaceBlankline{
 }
 sub replaceComments{
 		$_ =~ s/^#/\\#/;	
+}
+sub replaceChaptersOnOddPages{
+    $_ =~ s/{chapters-on-odd-pages}/\.rn COLLATE COLLATE-OLD\n\.de COLLATE\n\. if o \.BLANKPAGE 1 DIVIDER\n\. COLLATE-OLD\n\.\./;
+}
+sub replaceHeaders{
+    $_ =~ s/{headers-plain}/\..HEADER_PLAIN/;
+    $_ =~ s/{plain-headers}/\..HEADER_PLAIN/;
+    $_ =~ s/{header-font-family:\s*(.+)}/\.HEADER $1/;
+    $_ =~ s/{header-font-style-left:\s*(.+)}/\.HEADER_FONT_LEFT $1/;
+    $_ =~ s/{header-font-style-right:\s*(.+)}/\.HEADER_FONT_RIGHT $1/;
+    $_ =~ s/{header-font-style-center:\s*(.+)}/\.HEADER_FONT_CENTER $1/;
+    $_ =~ s/{header-font-family-left:\s*(.+)}/\.HEADER_FAMILY_LEFT $1/;
+    $_ =~ s/{header-font-family-right:\s*(.+)}/\.HEADER_FAMILY_RIGHT $1/;
+    $_ =~ s/{header-font-family-center:\s*(.+)}/\.HEADER_FAMILY_CENTER $1/;
+    $_ =~ s/{header-string-left:\s*(.*?)}/\.HEADER_LEFT "$1"/;
+    $_ =~ s/{header-string-right:\s*(.*?)}/\.HEADER_RIGHT "$1"/;
+    $_ =~ s/{header-string-center:\s*(.*?)}/\.HEADER_CENTER "$1"/;
+}
+sub replaceLanguage{
+    $_ =~ s/{language:\s*spanish}/\.SMARTQUOTES ES\n\.hla es\n\.hpf hyphen\.es/;
 }
 sub parseCommands(){
 
