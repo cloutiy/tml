@@ -1,6 +1,60 @@
 # November 6, 2014
 V. 1.0.4
 ## Added 
+### Hyphenation
+```
+{hyphenation-language: spanish}
+{hyphenation-language: es}
+{language: spanish} => sets both hyphenation-language and smartquotes to spanish
+```
+### Left
+```
+{justification: left}
+{justify-left}
+{quad-left}
+{left-justified}
+```
+### Right	
+```
+{justification: right}
+{justify-right}
+{quad-right}
+{right-justified}
+```
+### Center	
+```
+{justification: center}
+{justify-center}
+{quad-center}
+{center-justified}
+```
+### Full	
+```
+{justification: full}
+{justify-full}
+{justify}
+{justified}
+{quad-justified}
+{full-justified}
+```
+## Headers
+```
+{headers-plain}
+{plain-headers}
+{header-font-family: font-family}
+{header-font-family-left: font-family}
+{header-font-family-right: font-family}
+{header-font-family-center: font-family}
+{header-font-style-left: font-style}
+{header-font-style-right: font-style}
+{header-font-style-center: font-style}
+{header-string-left: Header String}
+{header-string-right: Header String}
+{header-string-center: Header String}
+```
+# November 6, 2014
+V. 1.0.4
+## Added 
 Chapter titles do not need to be enlcosed in "Quotations":
 
 `[chapter One] The Happening`
