@@ -158,16 +158,16 @@ Nov 9, 2014
 ```
 ## KERNING/LIGATURES
 ```
-{kerning-on} => kerning is on by default
+{kerning-on} *kerning is on by default
 {kerning-off}
-`<-x> / <+n> => T<-2>he trees turned to dust.
-{ligatures-on} => ligatures are on by default
+`<-x> / <+n>  (ex.: T<-2>he trees turned to dust.)
+{ligatures-on} *ligatures are on by default
 {ligatures-off}
 ```
 
 ## HYPHENATION
 ```
-{hyphenation-on} => hyphenation is on by default
+{hyphenation-on} *hyphenation is on by default
 {hyphenation-off}
 {hyphenation-language: spanish} 
 {hyphenation-max-lines: x}
@@ -178,7 +178,7 @@ Nov 9, 2014
 
 ## SMARTQUOTES
 ```
-{smartquotes-on} => smartquotes are on by default
+{smartquotes-on} *smartquotes are on by default
 {smartquotes-off}
 {smartquotes: danish}
 {smartquotes: german}
