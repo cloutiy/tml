@@ -206,7 +206,7 @@ Nov 9, 2014
 
 ## PRINT STYLE
 ```
-{typeset} => typeset is the default
+{typeset} *typeset is the default
 {typewrite}
 {typewrite: singlespace}
 ```
