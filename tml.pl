@@ -308,7 +308,7 @@ sub replaceParagraphLayout{
 	$_ =~ s/{paragraph-indent:\s*(.+)}/\.PARA_INDENT $1/;
 		
 	#{paragraphspace: nx}
-	$_ =~ s/{paragraph-space:\s*(.+)}/\.PARA_SPACE $1/;
+	$_ =~ s/{paragraph-spacing:\s*(.+)}/\.PARA_SPACE $1/;
 	
 	#{linelength:3i}
 	$_ =~ s/{line-length:\s*(.+)}/\.LL $1/;	
