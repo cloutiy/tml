@@ -47,12 +47,7 @@ Nov 9, 2014
 {page-height: nx}
 {paper-height: nx}
 ```
-## RECTO VERSO / DOUBLE SIDED
-```
-{double-sided}
-{recto-verso}
-```
-### MARGINS
+### Margins
 ```
 {margin-left: nx}
 {margin-right: nx}
@@ -60,9 +55,14 @@ Nov 9, 2014
 {margin-bottom: nx}
 {margins: nx nx nx nx}
 ```
+## RECTO VERSO / DOUBLE SIDED
+```
+{double-sided}
+{recto-verso}
+```
 
 ## FONTS
-### FONT FAMILY
+### Font Family
 ```
 {font-family: avant-garde}
 {font-family: avantgarde}
@@ -81,7 +81,7 @@ Nov 9, 2014
 {font-family: my-groff-font}
 ```		
 
-### FONT STYLE
+### Font Style
 ```
 {font-style: roman}
 {font-style: r}
@@ -96,14 +96,12 @@ Nov 9, 2014
 {font-style: sc}
 ```
 
-### FONT SIZE
+### Font Size
 `{font-size: x}`
-
-### LINE SPACING/LEADING
+### Leading
 ```
-{leading: 10/13} => sets PT_SIZE to 10 and .LS to 13 at same time
+{leading: 10/13} => sets {font-size: xx} to 10 and {line-spacing: xx} to 13 at same time
 {autoleading: [factor of] 2}  => not implemented yet. 
-{line-spacing: 13}
 ```
 
 ## JUSTIFICATION 
@@ -154,16 +152,23 @@ Nov 9, 2014
 {header-string-center: Header String}
 ```
 ## PARAGRAPHS
+### Spacing and Indent
 ```
 {paragraph-indent: nx}
-{paragraph-space: nx}
+{paragraph-spacing: nx}
+```
+### Line Length and Spacing
+```
 {line-length: 3i}
+{line-spacing: 13}
 ```
 ## KERNING/LIGATURES
+### Kerning
 ```
 {kerning-on} *kerning is on by default
 {kerning-off}
 <-x> / <+n>  (ex.: T<-2>he trees turned to dust.)
+### Ligatures
 {ligatures-on} *ligatures are on by default
 {ligatures-off}
 ```
