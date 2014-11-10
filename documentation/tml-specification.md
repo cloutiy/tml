@@ -134,7 +134,7 @@ Nov 9, 2014
 {quad-justified}
 {full-justified}
 ```
-## HEADERS
+## HEADERS AND FOOTERS
 ## Headers
 ```
 {headers-plain}
