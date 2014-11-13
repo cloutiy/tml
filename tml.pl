@@ -418,55 +418,62 @@ sub replaceEpigraphBlock {
 }
 
 sub replaceChapter {
-# IF [chapter] or [chapter xxx] appears on aline by itself, prepend [chapter] or [chapter xxx] to the start of the next line
-if (m/\[chapter\]\s*\n/) { $tmlfile[$currentElement+1] = "[chapter] " . $tmlfile[$currentElement+1]; $_ = "#\n";}
-if (m/\[chapter\s+(.+)\]\s*\n/) { $tmlfile[$currentElement+1] = "[chapter " . $1 ."] " . $tmlfile[$currentElement+1]; $_ = "#\n";}
+	# IF [chapter] or [chapter xxx] appears on aline by itself, prepend [chapter] or [chapter xxx] to the start of the next line
+	if (m/\[chapter\s+(.+)\]\s*\n/) { $tmlfile[$currentElement+1] = "[chapter " . $1 ."] " . $tmlfile[$currentElement+1]; $_ = "#\n";}
+	if (m/\[chapter\]\s*\n/) { $tmlfile[$currentElement+1] = "[chapter] " . $tmlfile[$currentElement+1]; $_ = "#\n";}
 
-# IF match [chapter], check if it's the first time. If yes do not put .COLLATE
-if (m/\[chapter/) {    
-    if ($firstChapter eq "true") {
-        $firstChapter = "false";
-        #[chapter 1] "Title"
-        $_ =~ s/\[chapter\s+(.+)\]\s*(".*?")/\.CHAPTER $1\n\.CHAPTER_TITLE $2\n\.START/;
-        #[chapter 1] Title
-        $_ =~ s/\[chapter\s+(.+)\]\s+([^"].+[^"])\s*\n/\.CHAPTER $1\n\.CHAPTER_TITLE "$2"\n\.START\n/;
-        #[chapter 1]
-        $_ =~ s/\[chapter\s+(.+)\]/\.CHAPTER $1\n\.CHAPTER_TITLE\n\.START/;
-        #[chapter] "Title"
-        $_ =~ s/\[chapter\]\s*(".*?")/\.CHAPTER_TITLE $1\n\.START/;
-        #[chapter] Title
-        $_ =~ s/\[chapter\]\s+([^"].+[^"])\s*\n/\.CHAPTER\n\.CHAPTER_TITLE "$1"\n\.START\n/;
-        #[chapter]
-		$_ =~ s/\[chapter\]/\.CHAPTER_TITLE\n\.START/;
-		
-        $_ =~ s/\[chap\s*(.+)\]\s*(.+)/\.CHAPTER $1\n\.CHAPTER_TITLE $2\n\.START/;
-        $_ =~ s/\[chap\s*(.+)\]/\.CHAPTER $1\n\.CHAPTER_TITLE\n\.START/;
-        $_ =~ s/\[chap\]\s*(.+)/\.CHAPTER_TITLE $1\n\.START/;
-        $_ =~ s/\[chap\]/\.CHAPTER_TITLE\n\.START/;
-    } else { 
-        #[chapter 1] "Title"
-        $_ =~ s/\[chapter\s+(.+)\]\s*(".*?")/\.COLLATE\n\.CHAPTER $1\n\.CHAPTER_TITLE $2\n\.START/;
-        #[chapter 1] Title
-        $_ =~ s/\[chapter\s+(.+)\]\s+([^"].+[^"])\s*\n/\.CHAPTER $1\n\.CHAPTER_TITLE "$2"\n\.START\n/;
-        #[chapter 1]
-        $_ =~ s/\[chapter\s+(.+)\]/\.COLLATE\n\.CHAPTER $1\n\.CHAPTER_TITLE\n.START/;
-        #[chapter] "Title"
-        $_ =~ s/\[chapter\]\s*(".*?")/\.CHAPTER_TITLE $1\n\.START/;
-        #[chapter] Title
-        $_ =~ s/\[chapter\]\s+([^"].+[^"])\s*\n/\.CHAPTER\n\.CHAPTER_TITLE "$1"\n\.START\n/;
-        #[chapter]
-        $_ =~ s/\[chapter\]/\.COLLATE\n\.CHAPTER_TITLE\n\.START/;
-        
-        $_ =~ s/\[chap\s+(.+)\]\s*(".*?")/\.COLLATE\n\.CHAPTER $1\n\.CHAPTER_TITLE $2\n\.START/;
-        #[chapter 1] Title
-        $_ =~ s/\[chap\s+(.+)\]\s+([^"].+[^"])\s*\n/\.CHAPTER $1\n\.CHAPTER_TITLE "$2"\n\.START\n/;
-        $_ =~ s/\[chap\s+(.+)\]/\.COLLATE\n\.CHAPTER $1\n\.CHAPTER_TITLE\n\.START/;
-        $_ =~ s/\[chap\]\s+(".+")/\.COLLATE\n\.CHAPTER_TITLE $1\n\.START/;
-        #[chapter] Title
-        $_ =~ s/\[chap\]\s+([^"].+[^"])\s*\n/\.CHAPTER\n\.CHAPTER_TITLE "$1"\n\.START\n/;
-        $_ =~ s/\[chap\]/\.COLLATE\n\.CHAPTER_TITLE\n\.START/;
-    }
-}
+	# IF match [chapter], check if it's the first time. If yes do not put .COLLATE
+	if (m/\[chapter/) {    
+    		if ($firstChapter eq "true") {
+        		$firstChapter = "false";
+        		#[chapter 1] "Title"
+        		if (/\[chapter\s+(.+)\]\s*(".*?")/){#print "Matched [chapter 1] \"Title\"\n";
+            			$_ =~ s/\[chapter\s+(.+)\]\s*(".*?")/\.DOCTYPE CHAPTER\n\.CHAPTER $1\n\.CHAPTER_TITLE $2\n\.nr #CH_NUM 1\n\.START/;
+        		} elsif (/\[chapter\s+(.+)\]\s+([^"].+[^"])\s*\n/) {# print "Matched [chapter 1] Title\n";
+            		#[chapter 1] Title
+            		$_ =~ s/\[chapter\s+(.+)\]\s+([^"].+[^"])\s*\n/\.DOCTYPE CHAPTER\n\.CHAPTER $1\n\.CHAPTER_TITLE "$2"\n\.nr #CH_NUM 1\n\.START\n/;
+        		} elsif (/\[chapter\s+(.+)\]/) {#print "Matched [chapter 1]\n";
+            		#[chapter 1]
+            		$_ =~ s/\[chapter\s+(.+)\]/\.DOCTYPE CHAPTER\n\.CHAPTER $1\n\.CHAPTER_TITLE\n\.nr #CH_NUM 1\n\.START/;
+        		} elsif (/\[chapter\s+(.+)\]/) {#print "Matched [chapter 1] \"Title\"\n";
+            		#[chapter 1]
+            		$_ =~ s/\[chapter\s+(.+)\]/\.DOCTYPE CHAPTER\n\.CHAPTER $1\n\.CHAPTER_TITLE\n\.nr #CH_NUM 1\n\.START/;
+        		} elsif (/\[chapter\]\s*(".*?")/) {#print "Matched [chapter] \"Title\"\n";
+            		#[chapter] "Title"
+            		$_ =~ s/\[chapter\]\s*(".*?")/\.DOCTYPE CHAPTER\n\.CHAPTER_TITLE $1\n\.nr #CH_NUM 1\n\.START/;
+        		} elsif (/\[chapter\]\s+([^"].+[^"])\s*\n/) {#print "Matched [chapter] Title\n";
+            		#[chapter] Title
+        		$_ =~ s/\[chapter\]\s+([^"].+[^"])\s*\n/\.DOCTYPE CHAPTER\n\.CHAPTER\n\.CHAPTER_TITLE "$1"\n\.nr #CH_NUM 1\n\.START\n/;
+        		} elsif (/\[chapter\]/) {#print "Matched [chapter]\n";
+            		#[chapter]
+            		$_ =~ s/\[chapter\]/\.DOCTYPE CHAPTER\n\.CHAPTER_TITLE\n\.nr #CH_NUM 1\n\.START/;
+        		} else {
+        		}
+	#This is NT the first time [chapter] is encountered
+    		} else { 
+        		if (/\[chapter\s+(.+)\]\s*(".*?")/) {#print "Matched other [chapter 1] \"Title\"\n";
+            		#[chapter 1] "Title"
+            		$_ =~ s/\[chapter\s+(.+)\]\s*(".*?")/\.COLLATE\n\.CHAPTER $1\n\.CHAPTER_TITLE $2\n\.START/;
+        		} elsif (/\[chapter\s+(.+)\]\s+([^"].+[^"])\s*\n/) {#print "Matched other [chapter 1] Title\n";
+            		#[chapter 1] Title
+            		$_ =~ s/\[chapter\s+(.+)\]\s+([^"].+[^"])\s*\n/\.CHAPTER $1\n\.CHAPTER_TITLE "$2"\n\.START\n/;
+        		} elsif (/\[chapter\s+(.+)\]/) {#print "Matched other [chapter 1]\n";
+            		#[chapter 1]
+            		$_ =~ s/\[chapter\s+(.+)\]/\.COLLATE\n\.CHAPTER $1\n\.CHAPTER_TITLE\n.START/;
+        		} elsif (/\[chapter\]\s*(".*?")/) {#print "Matched other [chapter] \"Title\"\n";
+            		#[chapter] "Title"
+            		$_ =~ s/\[chapter\]\s*(".*?")/\.CHAPTER_TITLE $1\n\.START/;
+        		} elsif (/\[chapter\]\s+([^"].+[^"])\s*\n/) {#print  "Matched other [chapter] Title\n";
+            		#[chapter] Title
+            		$_ =~ s/\[chapter\]\s+([^"].+[^"])\s*\n/\.COLLATE\n\.CHAPTER\n\.CHAPTER_TITLE "$1"\n\.START\n/;
+        		} elsif (/\[chapter\]/) {#print "Matched other [chapter]\n";
+            		#[chapter]
+            		$_ =~ s/\[chapter\]/\.COLLATE\n\.CHAPTER_TITLE\n\.START/;
+        		} else {
+        		}
+
+    		}
+	} 
 }
 
 sub replaceSection {
