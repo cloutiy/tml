@@ -2,7 +2,7 @@
 V. 1.0.5
 ## Added
 ### Blocks
-It is now possible to setup configuration items in blocks:
+Blocks allow a clean way of visually - and logically - grouping items together: 
 ```
 {setup-page-layout}
 option: value
@@ -16,7 +16,7 @@ option: value
 option: value
 {end}
 ```
-In this format, it's not necessary to add opening and curly braces for each command. The interpreter will add them for you. 
+Within the blocks, its not necessary to add opening and curly braces for each command. The interpreter will add them for you. 
 
 The string that begins the block can be arbitrary and means nothing to the interpreter, however it should begin with `{setup-xxx}`, this is how it knows that is needs to do a bit of processing until it reaches `{end}`
 ### Cover Page, Title Page and Copyright page tags
