@@ -54,6 +54,7 @@ Example:
 [end]
 ````
 To set the spacing between list items:
+
 `{item-spacing: 0.2cm} => sets the space between list items to 0.2cm.`
 
 # November 9, 2014
