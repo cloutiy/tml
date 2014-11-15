@@ -42,7 +42,7 @@ Author
 {align-center}
 ```
 
-### List Numbering and Lits Item Spacing
+### List Numbering and List Item Spacing
 `{start-at: 5} => start a list at a number other than 1`
 
 Example:
