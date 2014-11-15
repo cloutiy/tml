@@ -16,7 +16,7 @@ option: value
 option: value
 {end}
 ```
-In this format, it's not necessary to add opening and curly braces for each command. The interpretter will add them for you. 
+In this format, it's not necessary to add opening and curly braces for each command. The interpreter will add them for you. 
 
 The string that begins the block can be arbitrary and means nothing to the interpreter, however it should begin with `{setup-xxx}`, this is how it knows that is needs to do a bit of processing until it reaches {end}
 ### Cover Page, Title Page and Copyright page tags
