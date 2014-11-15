@@ -36,12 +36,15 @@ Author
 [end]
 ```
 ### Alignment
-`{align-left} => non-filling left. no BR required`
-`{align-right}`
-`{align-center}`
+```
+{align-left} => non-filling left. no BR required
+{align-right}
+{align-center}
+```
 
 ### List Numbering and Lits Item Spacing
 `{start-at: 5} => start a list at a number other than 1`
+
 Example:
 ```
 [list]
@@ -52,7 +55,7 @@ Example:
 ````
 To set the spacing between list items:
 `{item-spacing: 0.2cm} => sets the space between list items to 0.2cm.`
-```
+
 # November 9, 2014
 V. 1.0.4
 ## Added 
