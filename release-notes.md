@@ -1,3 +1,58 @@
+# November 14, 2014
+V. 1.0.5
+## Added
+### Blocks
+It is now possible to setup configuration items in blocks:
+```
+{setup-page-layout}
+option: value
+Option: value
+option: value
+{end}
+
+{setup-headers}
+option: value
+option: value
+option: value
+{end}
+```
+In this format, it's not necessary to add opening and curly braces for each command. The interpretter will add them for you. 
+
+The string that begins the block can be arbitrary and means nothing to the interpreter, however it should begin with `{setup-xxx}`, this is how it knows that is needs to do a bit of processing until it reaches {end}
+### Cover Page, Title Page and Copyright page tags
+```
+[coverpage]
+My Book
+by
+Author
+[end]
+
+[titlepage]
+...
+[end]
+
+[copyright]
+....
+[end]
+```
+### Alignment
+`{align-left} => non-filling left. no BR required`
+`{align-right}`
+`{align-center}`
+
+### List Numbering and Lits Item Spacing
+`{start-at: 5} => start a list at a number other than 1`
+Example:
+```
+[list]
+{start-at: 5}
+* item
+* item
+[end]
+````
+To set the spacing between list items:
+`{item-spacing: 0.2cm} => sets the space between list items to 0.2cm.`
+```
 # November 9, 2014
 V. 1.0.4
 ## Added 
