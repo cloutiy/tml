@@ -1,3 +1,23 @@
+# November 17, 2014
+V. 1.0.6
+## Modified
+### Blocks
+- Configuration blocks no longer require {end}. 
+- A blank line signifies the end of the current block. 
+- `setup-...` is no longer required
+- the string within `{...}` is prepended to each of the commands inside the block
+
+Example:
+```
+{paragraph}
+indent: 2cm
+spacing: 0.5cm
+```
+will be converted into:
+```
+{paragraph-indent: 2cm}
+{paragraph-spacing: 0.5cm}
+```
 # November 14, 2014
 V. 1.0.5
 ## Added
