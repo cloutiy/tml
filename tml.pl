@@ -795,7 +795,7 @@ sub replaceBlankline{
 	$_ =~ s/\[blankline\]/\.SPACE/;
 }
 sub replaceComments{
-		$_ =~ s/^\(!\)/.\"/;	
+		$_ =~ s/^\(!\)/\.\\"/;	
 }
 sub replaceChaptersOnOddPages{
     $_ =~ s/{chapters-on-odd-pages}/\.rn COLLATE COLLATE-OLD\n\.de COLLATE\n\. if o \.BLANKPAGE 1 DIVIDER\n\. COLLATE-OLD\n\.\./;
