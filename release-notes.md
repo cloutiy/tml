@@ -2,7 +2,7 @@
 V. 1.0.6
 ## Modified
 ### Blocks
-- Configuration blocks no longer require {end}. 
+- Configuration blocks no longer require `{end}`. 
 - A blank line signifies the end of the current block. 
 - `setup-...` is no longer required
 - the string within `{...}` is prepended to each of the commands inside the block
@@ -17,6 +17,11 @@ will be converted into:
 ```
 {paragraph-indent: 2cm}
 {paragraph-spacing: 0.5cm}
+```
+### Comments
+Comment lines now begin with `(!)`. Example:
+```
+(!) This is a comment line
 ```
 # November 14, 2014
 V. 1.0.5
