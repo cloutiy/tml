@@ -1,0 +1,34 @@
+(!) Below are a few configuration blocks
+{header}
+font-family: 		myfont
+font-family-left: 	myfont
+string-left: 		Title 1
+string-right: 		Title 2
+
+{font}
+family: value
+style:	bold
+size: 	10
+
+{margin}
+left:	2cm
+right:	2cm
+top:	2cm
+bottom:	2cm
+
+{line}
+spacing:	14
+length:		4.5i
+
+{page}
+size: 	6x9
+width:	20cm
+height:	30cm
+
+{paragraph}
+indent: 	2cm
+spacing:	1cm
+
+(!) Here is the block above in inline form
+{paragraph-indent: 	2cm}
+{paragraph-spacing:	1cm}
