@@ -314,7 +314,7 @@ Nov 9, 2014
 ```
 
 ## COMMENTS:
-`#`   
+`(!) This is a comment`   
 
 ## SPECIAL CHARS
 ### En/EM Dashes
