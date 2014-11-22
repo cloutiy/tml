@@ -1140,6 +1140,8 @@ if (/\\{\s*(.+)\s*}/) {
                         # Just want to account any spelling variations, and rename them to match the actual option names.
                         if ($block eq "metadata") { $block = "catalogue";}
                         if ($block eq "meta-data") { $block = "catalogue";}
+                        if ($block eq "catalogue-data") { $block = "catalogue";}
+                        if ($block eq "catalogue-info") { $block = "catalogue";}
                         if ($block eq "lists") { $block = "list";}
                         if ($block eq "headers") { $block = "header";}
                         if ($block eq "paragraphs") { $block = "paragraph";}
