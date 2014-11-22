@@ -1,3 +1,51 @@
+# November 22, 2014
+v. 1.0.7
+## Modified
+### Endnotes
+Endnotes now have following syntax: 
+```
+[+ endnote text.]
+```
+### Inline Comments
+Commentlines start with !, inline comments with \!:
+```
+! This is a comment line
+Some text \! and a comment which follows
+```
+
+## Added
+### Comment blocks
+```
+[comment]
+This is a multiline
+comment block.
+[end]
+```
+### Escaped brackets: 
+`[, ], <, >, {, }` are used in TML syntax.  To print those characters literally, use a backslash:
+```
+\{ \} \[ \] \< \>
+```
+If you want to include TML syntax literally instead of having the interpreter interpret it, simply start the command with a backslash:
+```
+\{font-size: 10}
+```
+will literally output:
+```
+{font-size: 10}
+```
+### Metadata
+```
+{catalogue}
+title:     
+subtitle:
+author: 
+editor:
+draft: 
+revision:
+pdf-title:
+```
+
 # November 17, 2014
 V. 1.0.6
 ## Modified
