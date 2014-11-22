@@ -36,7 +36,7 @@ will literally output:
 ```
 ### Metadata
 ```
-{catalogue}
+{catalogue}/{catalogue-data}/{catalogue-info}/{metadata}/meta-data}
 title:     
 subtitle:
 author: 
@@ -45,6 +45,7 @@ draft:
 revision:
 pdf-title:
 ```
+
 
 # November 17, 2014
 V. 1.0.6
