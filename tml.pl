@@ -1,5 +1,5 @@
 #!/usr/bin/env perl 
-# V. 1.0.7
+# V. 1.0.8
 # Release notes:
 # Fixed
 #~~~~~~~
@@ -719,84 +719,86 @@ sub replaceBoldItalic(){
 }
 
 sub replaceEnDash(){
-		$_ =~ s/\s-\s/ \\[en\] /g;  
+		$_ =~ s/\s-\s/ \\\[en\] /g;  
 }
 
 sub replaceEmDash(){
-		$_ =~ s/--/\\[em\]/g;  
+		$_ =~ s/--/\\\[em\]/g;  
 }
 
 sub replaceSpecialChars{
  # Plus/minus (arithmetic) \[+-] 
- $_ =~ s/\|\+\/-\|/\\[\+-\]/g; 
+ $_ =~ s/\\\+-/\\\[\+-\]/g; 
  # Subtract (arithmetic) \[mi]
-  $_ =~ s/\|-\|/\\[mi\]/g; 
+  $_ =~ s/\\-/\\\[mi\]/g; 
  # Multiply (arithmetic) \[mu]
-  $_ =~ s/\|x\|/\\[mu\]/g; 
+  $_ =~ s/\\x/\\\[mu\]/g; 
  # Divide (arithmetic) \[di]
-  $_ =~ s/\|\/\}/\\[di\]/g;  
+  $_ =~ s/\\div/\\\[di\]/g;  
  # Left double-quote \[lq] 
-  $_ =~ s/\|lq\|/\\[lq\]/g; 
+  $_ =~ s/\\lq/\\\[lq\]/g; 
  # Right double-quote \[rq]
-  $_ =~ s/\|rq\|/\\[rq\]/g; 
+  $_ =~ s/\\rq/\\\[rq\]/g; 
  # Open (left) single-quote \[oq]
-  $_ =~ s/\|oq\|/\\[oq\]/g; 
+  $_ =~ s/\\oq/\\\[oq\]/g; 
  # Close (right) single-quote \[oq]
-  $_ =~ s/\|oq\|/\\[oq\]/g; 
+  $_ =~ s/\\oq/\\\[oq\]/g; 
  # Bullet \[bu] 
-  $_ =~ s/\|bu\|/\\[bu\]/g; 
-  $_ =~ s/\|bullet\|/\\[bu\]/g; 
+  $_ =~ s/\\bullet/\\\[bu\]/g; 
+  $_ =~ s/\\bu/\\\[bu\]/g; 
  #Ballot box \[sq]
-  $_ =~ s/\|sq\|/\\[sq\]/g; 
-  $_ =~ s/\|square\|/\\[sq\]/g; 
+  $_ =~ s/\\square/\\\[sq\]/g;
+  $_ =~ s/\\sq/\\\[sq\]/g; 
  # Checkmark \[OK]
-  $_ =~ s/\|check\|/\\[OK\]/g; 
-  $_ =~ s/\|checkmark\|/\\[OK\]/g; 
+  $_ =~ s/\\checkmark/\\\[OK\]/g; 
+  $_ =~ s/\\check/\\\[OK\]/g; 
  # One-quarter \[14] 
-  $_ =~ s/\|1\/4\|/\\[14\]/g; 
+  $_ =~ s/\\1\/4/\\\[14\]/g; 
  # One-half \[12] 
-  $_ =~ s/\|1\/2\|/\\[12\]/g; 
+  $_ =~ s/\\1\/2/\\\[12\]/g; 
  # Three-quarters \[34] 
-  $_ =~ s/\|3\/4\|/\\[34\]/g; 
+  $_ =~ s/\\3\/4/\\\[34\]/g; 
  # Degree sign \[de] 
-  $_ =~ s/\|de\|/\\[de\]/g; 
-  $_ =~ s/\|deg\|/\\[de\]/g;
-  $_ =~ s/\|degree\|/\\[de\]/g; 
-  $_ =~ s/\|degrees\|/\\[de\]/g; 
+  $_ =~ s/\\de/\\\[de\]/g; 
+  $_ =~ s/\\deg/\\\[de\]/g;
+  $_ =~ s/\\degree/\\\[de\]/g;
+  $_ =~ s/\\degrees/\\\[de\]/g;
  # Dagger \[dg] 
-  $_ =~ s/\|dg\|/\\[dg\]/g; 
-  $_ =~ s/\|dagger\|/\\[dg\]/g; 
+  $_ =~ s/\\dg/\\\[dg\]/g; 
+  $_ =~ s/\\dagger/\\\[dg\]/g; 
  # Foot mark \[fm] 
-  $_ =~ s/\|fm\|/\\[fm\]/g; 
-  $_ =~ s/\|footmark\|/\\[fm\]/g; 
+  $_ =~ s/\\fm/\\\[fm\]/g; 
+  $_ =~ s/\\footmark/\\\[fm\]/g; 
  # Cent sign \[ct] 
-  $_ =~ s/\|ct\|/\\[ct\]/g; 
-  $_ =~ s/\[cent\]/\\[ct\]/g; 
+  $_ =~ s/\\ct/\\\[ct\]/g; 
+  $_ =~ s/\\cent/\\\[ct\]/g; 
  # Registered trademark \[rg] 
-  $_ =~ s/\|rg\|/\\[rg\]/g; 
-  $_ =~ s/\|tm\|/\\[rg\]/g; 
-  $_ =~ s/\|trademark\|/\\[rg\]/g; 
+  $_ =~ s/\rg/\\\[rg\]/g; 
+  $_ =~ s/\tm/\\\[rg\]/g; 
+  $_ =~ s/\\trademark/\\\[rg\]/g; 
  # Copyright \[co] 
-  $_ =~ s/\|co\|/\\[co\]/g;
-  $_ =~ s/\|copyright\|/\\[co\]/g;
+  $_ =~ s/\\copyright/\\\[co\]/g;
+  $_ =~ s/\\co/\\\[co\]/g;
  # Section symbol \[se]
-  $_ =~ s/\|se\|/\\[se\]/g; 
+  $_ =~ s/\\se/\\\[se\]/g; 
  # Foot and inch
- $_ =~ s/\|'\|/\\[foot\]/g; 
- $_ =~ s/\|"\|/\\[inch\]/g; 
+ $_ =~ s/\\'/\\\[foot\]/g; 
+ $_ =~ s/\\"/\\\[inch\]/g;
+ $_ =~ s/\\foot/\\\[foot\]/g; 
+ $_ =~ s/\\inch/\\\[inch\]/g;
  # Braces and brackets
- $_ =~ s/\|{\|/\{/g;
- $_ =~ s/\|lc\|/\{/g;
- $_ =~ s/\|}\|/\}/g; 
- $_ =~ s/\|rc\|/\}/g; 
- $_ =~ s/\|<\|/</g; 
- $_ =~ s/\|lt\|/</g; 
- $_ =~ s/\|>\|/>/g; 
- $_ =~ s/\|gt\|/>/g; 
- $_ =~ s/\|\[\|/\[/g; 
- $_ =~ s/\|ls\|/\[/g; 
- $_ =~ s/\|\]\|/\]/g; 
- $_ =~ s/\|rs\|/\]/g; 
+# $_ =~ s/\|{\|/\{/g;
+# $_ =~ s/\|lc\|/\{/g;
+# $_ =~ s/\|}\|/\}/g; 
+# $_ =~ s/\|rc\|/\}/g; 
+# $_ =~ s/\|<\|/</g; 
+# $_ =~ s/\|lt\|/</g; 
+# $_ =~ s/\|>\|/>/g; 
+# $_ =~ s/\|gt\|/>/g; 
+# $_ =~ s/\|\[\|/\[/g; 
+# $_ =~ s/\|ls\|/\[/g; 
+# $_ =~ s/\|\]\|/\]/g; 
+# $_ =~ s/\|rs\|/\]/g; 
 }
 sub replaceEllipses(){
 		#$_ =~ s/\|\*(.*?)\*\|/\\\*\[BDI\]$1\\\*\[PREV\]/;  
@@ -1156,7 +1158,10 @@ sub replaceCommentBlock{
 sub replaceEscapes {
     if (/\\{/) { $_ =~ s/\\{/{/g;}
     if (/\\}/) { $_ =~ s/\\}/}/g;}
-    if (/\\\[/) { $_ =~ s/\\\[/[/g;}
+    if (/\\\[.+\]/){}
+    else {
+        if (/\\\[/) { $_ =~ s/\\\[/[/g;}
+    }
     if (/\\\]/) { $_ =~ s/\\\]/]/g;}
     if (/\\</) { $_ =~ s/\\</</g;}
     if (/\\>/) { $_ =~ s/\\>/>/g;}
