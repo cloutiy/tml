@@ -94,6 +94,7 @@ Nov 22, 2014
 {font-style: bi}
 {font-style: smallcaps}
 {font-style: sc}
+{font-style: my-font-style}
 ```
 
 ### Font Size
@@ -226,16 +227,13 @@ Nov 22, 2014
 
 ## METADATA TAGS
 ```
-[author]
-[title]
-[doctitle]
-[subtitle]
-[chaptertitle]
-[draft]
-[revision]
-[covertitle]
-[doccovertitle]
-[pdftitle]
+{catalogue-data}
+author:
+title:
+subtitle:
+draft:
+revision:
+pdf-title:
 ```
 
 ## DOCUMENT ELEMENT TAGS
@@ -314,7 +312,14 @@ Nov 22, 2014
 ```
 
 ## COMMENTS:
-`(!) This is a comment`   
+```
+! This is a comment
+This \! an inline comment
+[comment]
+a 
+comment 
+block
+[end]`   
 
 ## SPECIAL CHARS
 ### En/EM Dashes
@@ -390,10 +395,10 @@ Nov 22, 2014
 
 ### Braces and brackets
 ```
-|{| / |lc|
-|}| / |rc| 
-|<| / |lt| 
-|>| / |gt| 
-|[| / |ls| 
-|]| / |rs| 
+\{
+\} 
+\< 
+\> 
+\[ 
+\] 
 ```
