@@ -40,7 +40,7 @@ Commands
 
   We can <up 2p<raise> text, <down 2p<lower it>.  We can even have <bold, size +2<multiple> commands.  We can <italic<also have <uppercase<nested> commands> if we want.
 
-  We also have footnotes[*Note the asterix at the begining.]. Endnotes are similar[The asterix for endnotes is at the end.*].
+  We also have footnotes[*Note the asterix at the begining.]. Endnotes are similar[+The asterix for endnotes is at the end.].
 
   With all this goodness, who wouldn't want to be friends with TML?
 
