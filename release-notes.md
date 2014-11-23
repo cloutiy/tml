@@ -14,6 +14,7 @@ Some text \! and a comment which follows
 ```
 ### Special Characters
 Special characters now have the following syntax:
+
 Before:
 ```
 |copyright|
