@@ -1,5 +1,5 @@
-# TML Specification v.1.0.4
-Nov 9, 2014
+# TML Specification v.1.0.7
+Nov 22, 2014
 
 ## PAGE LAYOUT
 ### Page sizes by name
@@ -147,9 +147,9 @@ Nov 9, 2014
 {header-font-style-left: font-style}
 {header-font-style-right: font-style}
 {header-font-style-center: font-style}
-{header-string-left: Header String}
-{header-string-right: Header String}
-{header-string-center: Header String}
+{header-left-string: Header String}
+{header-right-string: Header String}
+{header-center-string: Header String}
 ```
 ## PARAGRAPHS
 ### Spacing and Indent
@@ -165,18 +165,18 @@ Nov 9, 2014
 ## KERNING/LIGATURES
 ### Kerning
 ```
-{kerning-on} *kerning is on by default
-{kerning-off}
+{kerning: on} *kerning is on by default
+{kerning: off}
 <-x> / <+n>  (ex.: T<-2>he trees turned to dust.)
 ### Ligatures
-{ligatures-on} *ligatures are on by default
-{ligatures-off}
+{ligatures: on} *ligatures are on by default
+{ligatures: off}
 ```
 
 ## HYPHENATION
 ```
-{hyphenation-on} *hyphenation is on by default
-{hyphenation-off}
+{hyphenation: on} *hyphenation is on by default
+{hyphenation: off}
 {hyphenation-language: spanish} 
 {hyphenation-max-lines: x}
 {hyphenation-margin: x}
@@ -186,8 +186,8 @@ Nov 9, 2014
 
 ## SMARTQUOTES
 ```
-{smartquotes-on} *smartquotes are on by default
-{smartquotes-off}
+{smartquotes: on} *smartquotes are on by default
+{smartquotes: off}
 {smartquotes: danish}
 {smartquotes: german}
 {smartquotes: spanish}
@@ -221,7 +221,7 @@ Nov 9, 2014
 
 ## CHAPTERS
 ```
-{chapters-on-odd-pages} => starts new chapters on even numbered pages
+{chapters-start-on: odd-pages} => starts new chapters on even numbered pages
 ```
 
 ## METADATA TAGS
