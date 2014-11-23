@@ -3,22 +3,10 @@
 # Release notes:
 # Fixed
 #~~~~~~~
-# endnote now have following syntax: [+ endnote text.]
+
 # Added
 #~~~~~~~
-# [comment]...[end]
-# Comments start with !, inline comments with \!
-# escaped brackets: \{ \} \[ \]
-# {catalogue}
-# title:     
-# subtitle:
-# author: 
-# editor:
-# draft: 
-# revision:
 
-# Todo
-#~~~~~
 
 #
 #:::::::::::::::::: VARIABLES ::::::::::::::::::
@@ -27,7 +15,7 @@ $hasEndnotes="";	#If we use [endnote], .ENDNOTES must be added at the end of the
 $hasToc="";			#If we use [tableofcontents], we must insert .TOC at the end of the document
 $firstChapter = "true"; #IF it's the first chapter, we don't want to include the .COLLATE command
 %aliases ={};
-@blocktypes = ("page", "paper", "margin", "font", "justification", "line", "kerning", "hyphenation", "smartquotes", "header", "chapter", "paragraph", "catalogue");
+@blocktypes = ("page", "paper", "margin", "margins", "font", "fonts", "justification", "line", "kerning", "hyphenation", "smartquotes", "header","headers", "chapter", "chapters", "paragraph", "paragraphs", "catalogue", "catalogue-info", "catalogue-data", "metadata", "meta-data");
 
 #:::::::::::::::::: FILE I/O ::::::::::::::::::::
 # Load the input TML document into an array of strings
@@ -524,8 +512,10 @@ sub replaceEpigraphBlock {
 
 sub replaceChapter {
 # IF [chapter] or [chapter xxx] appears on aline by itself, prepend [chapter] or [chapter xxx] to the start of the next line
-if (m/\[chapter\s+(.+)\]\s*\n/) { $tmlfile[$currentElement+1] = "[chapter " . $1 ."] " . $tmlfile[$currentElement+1]; $_ = "#\n";}
-if (m/\[chapter\]\s*\n/) { $tmlfile[$currentElement+1] = "[chapter] " . $tmlfile[$currentElement+1]; $_ = "#\n";}
+if (m/\[chapter\s+(.+)\]\s*\n/) { 
+    $tmlfile[$currentElement+1] = "[chapter " . $1 ."] " . $tmlfile[$currentElement+1]; $_ = "!\n";
+}
+if (m/\[chapter\]\s*\n/) { $tmlfile[$currentElement+1] = "[chapter] " . $tmlfile[$currentElement+1]; $_ = "!\n";}
 
 # IF match [chapter], check if it's the first time. If yes do not put .COLLATE
 if (m/\[chapter/) {    
@@ -838,7 +828,11 @@ sub replaceComments{
 		}
 }
 sub replaceChaptersOnOddPages{
-    $_ =~ s/{chapters-on-odd-pages}/\.rn COLLATE COLLATE-OLD\n\.de COLLATE\n\. if o \.BLANKPAGE 1 DIVIDER\n\. COLLATE-OLD\n\.\./;
+    $_ =~ s/{chapters-start-on:\s*odd-pages}/\.rn COLLATE COLLATE-OLD\n\.de COLLATE\n\. if o \.BLANKPAGE 1 DIVIDER\n\. COLLATE-OLD\n\.\./;
+    $_ =~ s/{chapter-start-on:\s*odd-pages}/\.rn COLLATE COLLATE-OLD\n\.de COLLATE\n\. if o \.BLANKPAGE 1 DIVIDER\n\. COLLATE-OLD\n\.\./;
+    $_ =~ s/{start-chapters-on:\s*odd-pages}/\.rn COLLATE COLLATE-OLD\n\.de COLLATE\n\. if o \.BLANKPAGE 1 DIVIDER\n\. COLLATE-OLD\n\.\./;
+
+
 }
 sub replaceHeaders{
     $_ =~ s/{headers-plain}/\..HEADER_PLAIN/;
