@@ -319,79 +319,101 @@ This \! an inline comment
 a 
 comment 
 block
-[end]`   
-
+[end]   
+```
 ## SPECIAL CHARS
 ### En/EM Dashes
-`|en|` / `.. - ..` 
-`|em|` / `..--..` 
+`\en|` / `.. - ..` 
+`\em|` / `..--..` 
 
 ### Plus/minus (arithmetic)
-`|+/-|`
+`+/-`
 
 ### Subtract (arithmetic)
-`|-|`
+`\-`
 
 ### Multiply (arithmetic)
-`|x|`
+`\x`
 
 ### Divide (arithmetic)
-`|/|` 
+`\div` 
 
 ### Left double-quote 
-`|lq|`
+`\lq`
 
 ### Right double-quote
-`|rq|`
+`\rq`
 
 ### Open (left) single-quote
-`|oq|`
+`\oq\`
 
 ### Close (right) single-quote
-`|oq|`
+`\oq`
 
 ### Bullet \[bu] 
-`|bu| / [bullet]`
+```
+\bu
+\bullet
+```
 
 ### Ballot box
 ```
-|sq|
-|square|
+\sq
+\square
 ```
 
 ### One-quarter
-`|1/4|`
+`\1/4`
 
 ### One-half 
-`|1/2|`
+`\1/2`
 
 ### Three-quarters 
-`|3/4|`
+`\3/4`
 
 ### Degree sign 
-`|de| / [deg] / [degree]`
-
+```
+\de
+\deg
+\degree
+```
 ### Dagger 
-`|dg| / [dagger]`
+```
+\dg
+\dagger
+```
 
 ### Foot mark 
-`|fm| / [footmark]`
+```
+\fm
+\footmark
+```
 
 ### Cent sign 
-`|ct| /[cent]`
+```
+\ct
+\cent
+```
 
 ### Registered trademark 
-`|rg| / |tm| / [trademark]`
+```
+\rg
+\tm
+\trademark
+```
 
 ### Copyright 
-`|co| / [copyright]`
+```
+\co 
+\copyright
+```
 
 ### Section symbol
-`|se]` 
+`\se` 
 
 ### Foot and Inch
-`|'|`
-`|"|`
+`\'`
+`\"`
 
 ### Braces and brackets
 ```
