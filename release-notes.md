@@ -12,6 +12,20 @@ Commentlines start with !, inline comments with \!:
 ! This is a comment line
 Some text \! and a comment which follows
 ```
+### Special Characters
+Special characters now have the following syntax:
+Before:
+```
+|copyright|
+```
+Now:
+```
+\copyright
+```
+But the old groff/mom syntax also works:
+```
+\[co]
+```
 
 ## Added
 ### Comment blocks
