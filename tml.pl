@@ -512,13 +512,11 @@ sub replaceEpigraphBlock {
 
 sub replaceChapter {
 # IF [chapter] or [chapter xxx] appears on aline by itself, prepend [chapter] or [chapter xxx] to the start of the next line
-if (m/\[chapter\s+(.+)\]\s*\n/) { 
-    $tmlfile[$currentElement+1] = "[chapter " . $1 ."] " . $tmlfile[$currentElement+1]; $_ = "!\n";
-}
-if (m/\[chapter\]\s*\n/) { $tmlfile[$currentElement+1] = "[chapter] " . $tmlfile[$currentElement+1]; $_ = "!\n";}
+if (m/\[chapter\s+(.+)\]\s*\n/) { $tmlfile[$currentElement+2] = "[chapter " . $1 ."] " . $tmlfile[$currentElement+2]; $_ = "!\n";}
+if (m/\[chapter\]\s*\n/) { print $tmlfile[$currentElement+2];$tmlfile[$currentElement+2] = "[chapter] " . $tmlfile[$currentElement+2]; $_ = "!\n";}
 
 # IF match [chapter], check if it's the first time. If yes do not put .COLLATE
-if (m/\[chapter/) {    
+if (/\[chapter\s*.*\]/) {    
     if ($firstChapter eq "true") {
         $firstChapter = "false";
         #[chapter 1] "Title"
@@ -555,7 +553,7 @@ if (m/\[chapter/) {
             $_ =~ s/\[chapter\s+(.+)\]\s*(".*?")/\.COLLATE\n\.CHAPTER $1\n\.CHAPTER_TITLE $2\n\.START/;
         } elsif (/\[chapter\s+(.+)\]\s+([^"].+[^"])\s*\n/) {#print "Matched other [chapter 1] Title\n";
             #[chapter 1] Title
-            $_ =~ s/\[chapter\s+(.+)\]\s+([^"].+[^"])\s*\n/\.CHAPTER $1\n\.CHAPTER_TITLE "$2"\n\.START\n/;
+            $_ =~ s/\[chapter\s+(.+)\]\s+([^"].+[^"])\s*\n/\.COLLATE\n\.CHAPTER $1\n\.CHAPTER_TITLE "$2"\n\.START\n/;
         } elsif (/\[chapter\s+(.+)\]/) {#print "Matched other [chapter 1]\n";
             #[chapter 1]
             $_ =~ s/\[chapter\s+(.+)\]/\.COLLATE\n\.CHAPTER $1\n\.CHAPTER_TITLE\n.START/;
