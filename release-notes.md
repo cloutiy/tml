@@ -1,3 +1,31 @@
+# November 23, 2014
+v. 1.0.8
+## Added
+### Aliases
+Added a new configuration block for assigning aliases to refer to TML commands, tags and options:
+```
+{aliases}
+oblique = italic
+citation = blockquote
+lyric = quote
+```
+The interpreter will search for aliases within <...<, [...] and {...} and replace it with the specified synonym. In the above example:
+```
+<oblique<text>
+```
+becomes:
+```
+<italic<text>
+```
+and
+```
+[citation]
+```
+becomes:
+```
+[blockquote]
+```
+
 # November 22, 2014
 v. 1.0.7
 ## Modified
