@@ -1,6 +1,9 @@
 # Em v.0.1.6
-# Adding PP logic
-# 
+# Adding the following to identify the start of a paragraph.
+# >
+# .
+# [p]
+# p>
 
 
 
@@ -46,12 +49,12 @@ for ($current = 0; $current < $#tmlfile+1 ; $current++){
     elsif ($tmlfile[$current] =~    /\[\s*preface(.*)\s*\]/)    { processTag("preface");    sectionOptions();}
     elsif ($tmlfile[$current] =~    /\[\s*foreword(.*)\s*\]/)   { processTag("foreword");   sectionOptions();}
     elsif ($tmlfile[$current] =~    /\[\s*acknowledgements(.*)\s*\]/)  { processTag("acknowledgements");  sectionOptions();}
-    elsif ($tmlfile[$current] =~    /\[\s*section(.*)\s*\]/)    { processTag("section");    sectionOptions();insertPP();}
+    elsif ($tmlfile[$current] =~    /\[\s*section(.*)\s*\]/)    { processTag("section");    sectionOptions();}
     elsif ($tmlfile[$current] =~    /\[\s*contents(.*)\s*\]/)   { processTag("contents");}
-    elsif ($tmlfile[$current] =~    /\[\s*chapter(.*)\s*\]/)    { processTag("chapter");    chapterOptions(); insertPP();}
+    elsif ($tmlfile[$current] =~    /\[\s*chapter(.*)\s*\]/)    { processTag("chapter");    chapterOptions();}
     elsif ($tmlfile[$current] =~    /\[\s*epigraph\s*\]/)   { processTag("epigraph");   epigraphOptions();}
     elsif ($tmlfile[$current] =~/\[\s*epigraph.?block(.*)\s*\]/) { processTag("epigraphblock"); epigraphBlockOptions();}
-    elsif ($tmlfile[$current] =~    /\[\s*h(.*)\s*\]/)          { processTag("heading");insertPP();}
+    elsif ($tmlfile[$current] =~    /\[\s*h(.*)\s*\]/)          { processTag("heading");}
     elsif ($tmlfile[$current] =~    /\[\s*ph(.*)\s*\]/)   { processTag("parahead");}
     elsif ($tmlfile[$current] =~    /\[\s*block.?quote(.*)\s*\]/) { processTag("blockquote"); blockquoteOptions();}
     elsif ($tmlfile[$current] =~    /\[\s*quote(.*)\s*\]/)      { processTag("quote");      quoteOptions(); $is_quote="yes"; }
@@ -59,7 +62,11 @@ for ($current = 0; $current < $#tmlfile+1 ; $current++){
     elsif ($tmlfile[$current] =~    /\[\s*comment\s*\]/)        { processTag("comment"); }
     elsif ($tmlfile[$current] =~    /\[\s*footnote\s*\]/)       { processTag("footnote");}
     elsif ($tmlfile[$current] =~    /\[\s*end\s*\]/)            { processTag("end");}
-    elsif ($tmlfile[$current] =~    /^\[.\]/)                 { processTag("dropcap");}
+    elsif ($tmlfile[$current] =~    /^\.\s*/)                   { processTag("paragraph");}
+    elsif ($tmlfile[$current] =~    /^\[\s*p\s*\]/)              { processTag("paragraph");}
+    elsif ($tmlfile[$current] =~    /^p>\s*/)                   { processTag("paragraph");}
+    elsif ($tmlfile[$current] =~    /^>\s*/)                    { processTag("paragraph");}
+    elsif ($tmlfile[$current] =~    /^\[.\]/)                   { processTag("dropcap");}
     
     # Includes
     elsif ($tmlfile[$current] =~    /\{\s*include\s*\}/)        { include();}
@@ -128,7 +135,7 @@ for ($current = 0; $current < $#tmlfile+1 ; $current++){
     # Blank line
     elsif ($tmlfile[$current] eq "\n") {
         if ($is_quote eq "yes"){push(@tmlout, "\.SPACE\n");}
-        else { push(@tmlout, "=======\n");}
+        #else { push(@tmlout, "=======\n");}
     }
     else {push(@tmlout, $tmlfile[$current])}
 }
@@ -885,13 +892,13 @@ $is_local_options = "yes";
 if ($tag eq "blockquote") {
     push(@tmlout, "\.BLOCKQUOTE\n");
     #push(@tag_stack, "\.BLOCKQUOTE OFF\n");
-    push(@tag_stack, "\.BLOCKQUOTE OFF\n.PP\n");
+    push(@tag_stack, "\.BLOCKQUOTE OFF\n");
     $current+=1;
     
 }elsif ($tag eq "quote") {
     push(@tmlout, "\.QUOTE\n");
     #push(@tag_stack, "\.QUOTE OFF\n");
-    push(@tag_stack, "\.QUOTE OFF\n.PP\n");
+    push(@tag_stack, "\.QUOTE OFF\n");
     $current+=1;
     
 }elsif ($tag eq "dropcap") {
@@ -933,13 +940,13 @@ if ($tag eq "blockquote") {
 }elsif ($tag eq "epigraph") {
     push(@tmlout, "\.EPIGRAPH\n");
     #push(@tag_stack, "\.EPIGRAPH OFF\n");
-    push(@tag_stack, "\.EPIGRAPH OFF\n.PP\n");
+    push(@tag_stack, "\.EPIGRAPH OFF\n");
     $current+=1;
     
 }elsif ($tag eq "epigraphblock") {
     push(@tmlout, "\.EPIGRAPH BLOCK\n");
     #push(@tag_stack, "\.EPIGRAPH OFF\n");
-    push(@tag_stack, "\.EPIGRAPH OFF\n.PP\n");
+    push(@tag_stack, "\.EPIGRAPH OFF\n");
     $current+=1;
     
 }elsif ($tag eq "cover") {
@@ -994,6 +1001,16 @@ if ($tag eq "blockquote") {
 }elsif ($tag eq "footnote") {
    $hasFootnotes = "yes";
    collectFootnote();
+   
+}elsif ($tag eq "paragraph") {
+    $tmlfile[$current] =~ s/(^\.s*)/\.PP\n/;
+    $tmlfile[$current] =~ s/(^\[s*p\s*\])/\.PP\n/;
+    $tmlfile[$current] =~ s/(^p>)/\.PP\n/;
+    $tmlfile[$current] =~ s/(^>s*)/\.PP\n/;
+
+    push(@tmlout, $tmlfile[$current]);
+    #push(@tmlout, "\.PP\n"); 
+    $current+=1;
   
 }elsif ($tag eq "end") {
 
