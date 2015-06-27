@@ -1,5 +1,5 @@
 # Em v.0.1.6
-# Adding the following to identify the start of a paragraph.
+# Added the following to identify the start of a paragraph.
 # >
 # .
 # [p]
@@ -66,7 +66,7 @@ for ($current = 0; $current < $#tmlfile+1 ; $current++){
     elsif ($tmlfile[$current] =~    /^\[\s*p\s*\]/)              { processTag("paragraph");}
     elsif ($tmlfile[$current] =~    /^p>\s*/)                   { processTag("paragraph");}
     elsif ($tmlfile[$current] =~    /^>\s*/)                    { processTag("paragraph");}
-    elsif ($tmlfile[$current] =~    /^\[.\]/)                   { processTag("dropcap");}
+    elsif ($tmlfile[$current] =~    /^\[.\]/)                   { insertPP();processTag("dropcap");}
     
     # Includes
     elsif ($tmlfile[$current] =~    /\{\s*include\s*\}/)        { include();}
