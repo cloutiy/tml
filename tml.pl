@@ -62,7 +62,7 @@ for ($current = 0; $current < $#tmlfile+1 ; $current++){
     elsif ($tmlfile[$current] =~    /\[\s*comment\s*\]/)        { processTag("comment"); }
     elsif ($tmlfile[$current] =~    /\[\s*footnote\s*\]/)       { processTag("footnote");}
     elsif ($tmlfile[$current] =~    /\[\s*end\s*\]/)            { processTag("end");}
-    elsif ($tmlfile[$current] =~    /^\.\s*/)                   { processTag("paragraph");}
+    #elsif ($tmlfile[$current] =~    /^\.\s*/)                   { processTag("paragraph");}
     elsif ($tmlfile[$current] =~    /^\[\s*p\s*\]/)              { processTag("paragraph");}
     elsif ($tmlfile[$current] =~    /^p>\s*/)                   { processTag("paragraph");}
     elsif ($tmlfile[$current] =~    /^>\s*/)                    { processTag("paragraph");}
@@ -1003,7 +1003,7 @@ if ($tag eq "blockquote") {
    collectFootnote();
    
 }elsif ($tag eq "paragraph") {
-    $tmlfile[$current] =~ s/(^\.s*)/\.PP\n/;
+    #$tmlfile[$current] =~ s/(^\.s*)/\.PP\n/;
     $tmlfile[$current] =~ s/(^\[s*p\s*\])/\.PP\n/;
     $tmlfile[$current] =~ s/(^p>)/\.PP\n/;
     $tmlfile[$current] =~ s/(^>s*)/\.PP\n/;
