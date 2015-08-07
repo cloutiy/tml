@@ -1,4 +1,9 @@
-# Em v.0.1.6
+# v. 0.0.1.7
+# Added {document#style}
+# Added {page#dimensions} and {page#margins}
+
+
+# tml v.0.1.6
 # Added the following to identify the start of a paragraph.
 # >
 # .
@@ -62,7 +67,7 @@ for ($current = 0; $current < $#tmlfile+1 ; $current++){
     elsif ($tmlfile[$current] =~    /\[\s*comment\s*\]/)        { processTag("comment"); }
     elsif ($tmlfile[$current] =~    /\[\s*footnote\s*\]/)       { processTag("footnote");}
     elsif ($tmlfile[$current] =~    /\[\s*end\s*\]/)            { processTag("end");}
-    #elsif ($tmlfile[$current] =~    /^\.\s*/)                   { processTag("paragraph");}
+    elsif ($tmlfile[$current] =~    /^\.\s*/)                   { processTag("paragraph");}
     elsif ($tmlfile[$current] =~    /^\[\s*p\s*\]/)              { processTag("paragraph");}
     elsif ($tmlfile[$current] =~    /^p>\s*/)                   { processTag("paragraph");}
     elsif ($tmlfile[$current] =~    /^>\s*/)                    { processTag("paragraph");}
@@ -1003,7 +1008,7 @@ if ($tag eq "blockquote") {
    collectFootnote();
    
 }elsif ($tag eq "paragraph") {
-    #$tmlfile[$current] =~ s/(^\.s*)/\.PP\n/;
+    $tmlfile[$current] =~ s/(^\.s*)/\.PP\n/;
     $tmlfile[$current] =~ s/(^\[s*p\s*\])/\.PP\n/;
     $tmlfile[$current] =~ s/(^p>)/\.PP\n/;
     $tmlfile[$current] =~ s/(^>s*)/\.PP\n/;
@@ -2565,7 +2570,7 @@ my $title = "";
 # {document} is of no interest to us, move to the next line to scan for options
 $current+=1;
 
-push(@tmlout, "\.\\# Document Metadata #\n");
+push(@tmlout, "\.\\# Document Style and Metadata #\n");
 print "DEBUG -> Entering documentConfig(): current($current) line now: $tmlfile[$current]";
 
 for ( $i = $current; $i<100; $i++) {
@@ -2588,8 +2593,17 @@ for ( $i = $current; $i<100; $i++) {
         }elsif ($1 eq "draft") {push(@tmlout,       "\.DRAFT \"$2\"\n");
         }elsif ($1 eq "revision") {push(@tmlout,    "\.REVISION \"$2\"\n");
         }elsif ($1 eq "pdf-title") {push(@tmlout,     "\.PDF_TITLE \"$2\"\n");
+        }elsif ($1 eq "family") {push(@tmlout,     "\.FAMILY \"$2\"\n");
+        }elsif ($1 eq "font") {push(@tmlout,     "\.PP_FONT \"$2\"\n");
+        }elsif ($1 eq "size") {push(@tmlout,     "\.PT_SIZE \"$2\"\n");
+        }elsif ($1 eq "lead") {push(@tmlout,     "\.LS \"$2\"\n");
+        }elsif ($1 eq "autolead") {push(@tmlout,     "\.AUTOLEAD\n");
         }else {$error_line = $i+1;die("ERROR on line [$error_line] -> \'$1\' is not a valid option for {document}\n");}
-            
+    
+    # if #style
+    }elsif ($tmlfile[$i] =~ /#style/){
+
+
     #Else there are no more options
     }else {
         #Update the current line counter to point to the last line where an option was found
@@ -2647,8 +2661,20 @@ for ( $i = $current; $i<100; $i++) {
                 push(@tmlout,  $title);
         }elsif ($1 eq "size") {push(@tmlout,    "$page_sizes{$2}\n");
         }elsif ($1 eq "width") {push(@tmlout,   "\.PAGEWIDTH $2\n");
-        }elsif ($1 eq "height") {push(@tmlout,  "\.PAGELENGTH $2\n");
+        }elsif ($1 eq "length") {push(@tmlout,  "\.PAGELENGTH $2\n");
+        }elsif ($1 eq "left") {push(@tmlout,  "\.L_MARGIN $2\n");
+        }elsif ($1 eq "right") {push(@tmlout,  "\.R_MARGIN $2\n");
+        }elsif ($1 eq "top") {push(@tmlout,  "\.T_MARGIN $2\n");
+        }elsif ($1 eq "bottom") {push(@tmlout,  "\.B_MARGIN $2\n");
+        }elsif ($1 eq "recto-verso") {push(@tmlout,  "\.FORCE_RECTO\n");
         }else {$error_line = $i+1;die("ERROR on line [$error_line] -> \'$1\' is not a valid option for {page}\n");}
+
+    # if #dimensions or #margins
+    }elsif ($tmlfile[$i] =~ /#dimensions/) {
+    }elsif ($tmlfile[$i] =~ /#margins/) {
+
+    # If recto-verso
+    }elsif ($tmlfile[$i] =~ /recto-verso/) {push(@tmlout,  "\.RECTO\n");
             
     #Else there are no more options
     }else {
