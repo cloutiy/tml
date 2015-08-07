@@ -1,3 +1,42 @@
+# August 6, 2015
+v. 0.0.1.7
+## Modified
+### {document}
+`{document}` now has the following options:
+```
+{document}
+title:
+subtitle:
+author:
+copyright:
+pdf-title:
+draft:
+revision:
+#style
+  family:
+  font:
+  size:
+  lead:
+  autolead:
+```
+### {page}
+`{page}` now has the following options:
+```
+{page}
+#dimensions
+  papersize:
+  width:
+  length:
+#margins:
+  left:
+  right:
+  top:
+  bottom:
+  recto-verso
+  recto-verso: force
+```
+
+
 # November 23, 2014
 v. 1.0.8
 ## Added
