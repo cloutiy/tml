@@ -4,7 +4,7 @@ v. 0.0.1.7
 ### {document}
 `{document}` now has the following options:
 ```
-{document}
+**{document}**
 title:
 subtitle:
 author:
@@ -12,7 +12,7 @@ copyright:
 pdf-title:
 draft:
 revision:
-#style
+**#style**
   family:
   font:
   size:
@@ -22,12 +22,12 @@ revision:
 ### {page}
 `{page}` now has the following options:
 ```
-{page}
-#dimensions
+**{page}**
+**#dimensions**
   papersize:
   width:
   length:
-#margins:
+**#margins**
   left:
   right:
   top:
