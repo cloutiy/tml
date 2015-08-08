@@ -1,0 +1,37 @@
+[list a]
+  @ apples
+  @ oranges
+  @ bananas
+[end]
+
+A paragraph.
+
+[list c)]
+  @ apples
+  @ oranges
+  @ bananas
+[end]
+
+A paragraph.
+
+[list 5.]
+  @ apples
+  @ oranges
+  @ bananas
+[end]
+
+A paragraph.
+
+[list (1)]
+  @ apples
+  @ oranges
+  @ bananas
+  [list a)]
+    space-before: 10p
+    space-after: 10p
+    indent: 18p
+    @ lemons
+    @ celery
+  [end]
+  @ lettuce
+[end]
