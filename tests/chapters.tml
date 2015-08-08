@@ -1,0 +1,58 @@
+{chapters}  
+string:       Chapitre
+family:       times
+font:         bold
+quad:         left
+title-family: helvetica
+title-font:   italic
+title-quad:   left
+start-on-odd-pages
+
+
+[chapter] Title
+
+[chapter] Title 1/Title 2
+
+[chapter 1] Title
+
+[chapter 2] Title 1/Title 2
+
+[chapter]
+Title
+
+[chapter 3]
+Title
+
+[chapter]
+Title 1/Title 2
+
+[chapter 4]
+Title 1/Title 2
+
+[chapter]
+title: Title 1 / Title 2
+
+[chapter 5]
+Title 1
+
+[chapter]
+title: Title
+
+[chapter 6]
+title: Title
+
+[chapter]
+title: Title 1/Title 2
+
+[chapter 7]
+title: Title 1/Title 2
+
+[chapter 8]
+title: Title 1/Title 2
+subtitle: My Subtitle
+attribution: By
+author: Yves Cloutier
+title-family: helvetica
+
+
+
