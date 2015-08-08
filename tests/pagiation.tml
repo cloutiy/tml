@@ -1,0 +1,9 @@
+{pagination}
+style:  digit
+position: top-left
+on-first-page
+hyphenate-page-numbers
+
+{pagination: on}
+{pagination: off}
+{page #2}
