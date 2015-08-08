@@ -1,0 +1,21 @@
+{epigraphs}
+family:   times
+font:     italic
+size:     10
+color:    red
+lead:     12
+
+[epigraph]
+Sed laoreet mi justo. In feugiat fermentum imperdiet. Ut ullamcorper ut orci ut interdum. Nulla massa lorem, suscipit id sapien at, luctus blandit sapien. Quisque vulputate sem ac quam condimentum, ac molestie leo gravida. Ut quis dolor id massa tempus faucibus ac id eros. Integer sit amet nunc tincidunt, aliquam libero ut, maximus risus. Etiam vitae velit at tellus egestas gravida nec vel odio. 
+[end]
+
+{epigraph-blocks}
+family:   times
+font:     italic
+size:     10
+color:    red
+lead:     12
+
+[epigraph-block]
+Sed laoreet mi justo. In feugiat fermentum imperdiet. Ut ullamcorper ut orci ut interdum. Nulla massa lorem, suscipit id sapien at, luctus blandit sapien. Quisque vulputate sem ac quam condimentum, ac molestie leo gravida. Ut quis dolor id massa tempus faucibus ac id eros. Integer sit amet nunc tincidunt, aliquam libero ut, maximus risus. Etiam vitae velit at tellus egestas gravida nec vel odio. 
+[end]
