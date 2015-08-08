@@ -1,0 +1,17 @@
+{dropcaps}
+family:   times
+font:     italic
+color:    red
+gutter:   18p
+condense%: 3
+linespan:   3
+[O]nce upon a time...
+
+{dropcap}
+gutter: 4p
+linespan: 2
+expand%: 20
+[O]nce upon a second time...
+
+
+
