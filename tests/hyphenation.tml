@@ -1,0 +1,10 @@
+{hyphenation}
+max-consecutive-lines: 3
+margin: 2p
+space: 3p
+
+{hyphenation: off}
+If hyphenation options are set, it hyphenation is also turned on silently.  Then can be toggled on or off.
+
+{hyphenation: on}
+If hyphenation options are set, it hyphenation is also turned on silently.  Then can be toggled on or off.
