@@ -1,0 +1,38 @@
+{headers}
+#general
+  family:   times
+  size:    10
+  color:    red
+  margin: 1cm
+  gap:   1cm
+#left
+  family: times
+  font: italic
+  size: 12
+  string: $author
+  color:  blue
+  caps
+  smallcaps
+#right
+  family: times
+  font: italic
+  size: 12
+  string: $title
+  color:  blue
+  caps
+  smallcaps
+#center
+  family: times
+  font: italic
+  size: 12
+  string: $page
+  color:  blue
+  caps
+  smallcaps
+#rule
+  weight: 2
+  gap:    0.5cm
+  color:  green
+  none
+  
+
