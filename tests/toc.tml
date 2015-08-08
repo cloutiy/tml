@@ -1,0 +1,35 @@
+{contents}
+#general
+  family: berling
+  font:   bold
+  size:   10
+  lead:   12
+  pagination-style: roman
+  spaced-entries
+#header
+  vertical-position:  1cm
+  string: Contents
+  family: berling
+  font:   italic
+  size:   14
+#titles
+  family: berling
+  font:   roman
+  size:   13
+  indent: 1cm
+#h1
+  family: times
+  font:   italic
+  size:   10
+  indent: 1.5cm
+  prefix-number-style: full
+#entry-page-numbers
+  family: times
+  font:   bold
+  size:   -2
+  padding: 2
+  
+[contents]
+
+  
+
