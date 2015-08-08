@@ -1,0 +1,37 @@
+{footnotes}
+family:     times
+font:       italic
+size:       -2
+color:      blue
+lead:       12
+quad:       left
+padding:    18p
+marker:     number
+spacing:    18p
+no-rule
+rule-weight:  2mm 
+rule-length:  6cm
+rule-adjust:  10p
+
+[chapter 1] The Grapes of Wrath
+Ut eu arcu porttitor, molestie libero ac, condimentum sem. Sed in orci sed erat egestas euismod. Donec euismod sagittis dictum. Donec et auctor nisi. Curabitur eu sapien nisi. Donec in ipsum id ipsum dignissim tristique eget. He was a manager[*] while she was a leader[*]. non justo. Suspendisse pellentesque, magna in consectetur fringilla, augue nisi venenatis nibh, lobortis gravida massa libero vitae metus. 
+
+[footnote]
+A manager is someone who manages other people.
+[end]
+
+[footnote]
+A leader is someone who leads other people.
+[end]
+
+[chapter 2] The Cherry Blaster
+Ut eu arcu porttitor, molestie libero ac, condimentum sem. Sed in orci sed erat egestas euismod. Donec euismod sagittis dictum. Donec et auctor nisi. Curabitur eu sapien nisi. Donec in ipsum id ipsum dignissim tristique eget. He was a giver[*] while she was a taker[*]. non justo. Suspendisse pellentesque, magna in consectetur fringilla, augue nisi venenatis nibh, lobortis gravida massa libero vitae metus. 
+
+[footnote]
+A giver is someone who giver to other people.
+[end]
+
+[footnote]
+A taker is someone who takes from other people.
+A taker is someone who takes from other peoples.
+[end]
