@@ -1,0 +1,12 @@
+{kerning: on}
+S<-1>ome t<+3>ext.
+
+{kerning: off}
+Some text.
+
+{ligatures: on}
+Some text.
+
+{ligatures: off}
+Some text.
+
