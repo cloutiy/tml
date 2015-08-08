@@ -1,0 +1,28 @@
+{h1}
+family:     berling
+font:       bold
+quad:       left
+underscore: 0.5p 10cm
+numbered
+caps
+
+{h2}
+family:     helvetica
+font:       italic
+quad:       left
+underscore: 0.5p 10cm
+smallcaps
+
+{ph}
+family:     times
+font:       italic
+size:       -1
+
+[h1] Gone Fishing
+Sed laoreet mi justo. In feugiat fermentum imperdiet. Ut ullamcorper ut orci ut interdum. Nulla massa lorem, suscipit id sapien at, luctus blandit sapien. Quisque vulputate sem ac quam condimentum, ac molestie leo gravida. Ut quis dolor id massa tempus faucibus ac id eros. Integer sit amet nunc tincidunt, aliquam libero ut, maximus risus. Etiam vitae velit at tellus egestas gravida nec vel odio. 
+
+[ph Blue Berries] Sed laoreet mi justo. In feugiat fermentum imperdiet. Ut ullamcorper ut orci ut interdum. Nulla massa lorem, suscipit id sapien at, luctus blandit sapien. Quisque vulputate sem ac quam condimentum, ac molestie leo gravida. Ut quis dolor id massa tempus faucibus ac id eros. Integer sit amet nunc tincidunt, aliquam libero ut, maximus risus. Etiam vitae velit at tellus egestas gravida nec vel odio. 
+
+[h2] Wild Nuts
+Sed laoreet mi justo. In feugiat fermentum imperdiet. Ut ullamcorper ut orci ut interdum. Nulla massa lorem, suscipit id sapien at, luctus blandit sapien. Quisque vulputate sem ac quam condimentum, ac molestie leo gravida. Ut quis dolor id massa tempus faucibus ac id eros. Integer sit amet nunc tincidunt, aliquam libero ut, maximus risus. Etiam vitae velit at tellus egestas gravida nec vel odio. 
+
