@@ -1,0 +1,6 @@
+{strings}
+#chapter-string = \E$[CHAPTER_STRING]
+#my-string      = ...test...
+#br = [br]
+
+There was an opportunity to set the #chapter-string with #my-string in this lifetime #br.
