@@ -1,3 +1,6 @@
+# Dec 26, 2015 
+#   Made debug messages conditional.
+#   
 # v. 0.0.1.7
 # Added {document#style}
 # Added {page#dimensions} and {page#margins}
@@ -5,10 +8,11 @@
 
 # tml v.0.1.6
 # Added the following to identify the start of a paragraph.
-# >
-# .
-# [p]
-# p>
+# > This is a new para.
+# ,,This is a new para.
+# [p] This is a new para.
+# p> This is a new para.
+# p This is a new para.
 
 
 
@@ -16,6 +20,7 @@
 open(FILE, $ARGV[0]) || die("Could not open $ARGV[0]\n");
 @tmlfile = <FILE>;
 close(FILE);
+
 
 # GLOBALS
 $current = 0;           #always points to the current line
@@ -41,9 +46,9 @@ $dropcap_span = "none";
 # documentListOptions{space-before} =
 # documentChapterOptions{size} = 
 # documentSectionOptions =
-print "DEBUG -> # of lines in input file: $#tmlfile\n";
+# print "DEBUG -> # of lines in input file: $#tmlfile\n";
 for ($current = 0; $current < $#tmlfile+1 ; $current++){
-    print "($current) $tmlfile[$current]";
+    # print "DEBUG ($current) $tmlfile[$current]";
     
     # Tags
     if ($tmlfile[$current] =~       /\[\s*cover(.*)\s*\]/)      { processTag("cover");      coverOptions();}
@@ -67,11 +72,20 @@ for ($current = 0; $current < $#tmlfile+1 ; $current++){
     elsif ($tmlfile[$current] =~    /\[\s*comment\s*\]/)        { processTag("comment"); }
     elsif ($tmlfile[$current] =~    /\[\s*footnote\s*\]/)       { processTag("footnote");}
     elsif ($tmlfile[$current] =~    /\[\s*end\s*\]/)            { processTag("end");}
-    elsif ($tmlfile[$current] =~    /^\.\s*/)                   { processTag("paragraph");}
-    elsif ($tmlfile[$current] =~    /^\[\s*p\s*\]/)              { processTag("paragraph");}
+
+    # Paragraph specifiers
+    elsif ($tmlfile[$current] =~    /^\.p\s*/)                  { processTag("paragraph");}
+    elsif ($tmlfile[$current] =~    /^\.\s*/)                  { processTag("paragraph");}
+    elsif ($tmlfile[$current] =~    /^\[\s*p\s*\]/)             { processTag("paragraph");}
     elsif ($tmlfile[$current] =~    /^p>\s*/)                   { processTag("paragraph");}
+    elsif ($tmlfile[$current] =~    /^p\s*/)                    { processTag("paragraph");}
     elsif ($tmlfile[$current] =~    /^>\s*/)                    { processTag("paragraph");}
+    elsif ($tmlfile[$current] =~    /^,,/)                      { processTag("paragraph");}
+    #elsif ($tmlfile[$current] =~    /^\n/)                     { insertPP();}
+
+    # Dropcaps
     elsif ($tmlfile[$current] =~    /^\[.\]/)                   { insertPP();processTag("dropcap");}
+    
     
     # Includes
     elsif ($tmlfile[$current] =~    /\{\s*include\s*\}/)        { include();}
@@ -92,7 +106,7 @@ for ($current = 0; $current < $#tmlfile+1 ; $current++){
     elsif ($tmlfile[$current] =~    /\{\s*headers\s*\}/)       { headerConfig();}
     elsif ($tmlfile[$current] =~    /\{\s*margins\s*\}/)       { marginConfig();}
     elsif ($tmlfile[$current] =~    /\{\s*footers\s*\}/)       { footerConfig();}
-    elsif ($tmlfile[$current] =~    /\{\s*chapters\s*\}/)      { chapterConfig();}
+    elsif ($tmlfile[$current] =~    /\{\s*chapter-headings\s*\}/) { chapterConfig();}
     elsif ($tmlfile[$current] =~    /\{\s*h(.)\s*\}/)           { headingConfig($1);}
     elsif ($tmlfile[$current] =~    /\{\s*ph*\s*\}/)         { paraheadConfig();}
     elsif ($tmlfile[$current] =~    /\{\s*epigraphs\s*\}/)     { epigraphConfig();}
@@ -147,7 +161,7 @@ for ($current = 0; $current < $#tmlfile+1 ; $current++){
 
 
 
-print "------------------Main------------------\n";
+# print "DEBUG ------------------Main------------------\n";
 insertFootnotes();
 insertToc();
 pairKerning();
@@ -156,11 +170,126 @@ pairKerning();
 for ($current = 0; $current < $#tmlout ; $current++){
   inlineFormatting();
 }
+
+#Add a function that will filter out duplicate .PP and .PP that are followed by headings, and other tags.
+#removeExtraPP();
+
+# Display the file.
 printtml(); 
 
 
 sub insertPP{
   push(@tmlout, "\.PP\n");
+}
+
+
+#//////////////////////////
+#*************************
+# Remove Extra PP
+#*************************
+sub removeExtraPP{ 
+  for (my $i = 0; $i < $#tmlout+1 ; $i++){
+
+    # A couple of line counters 
+    $nextline = $i+1; 
+    $previousline = $i-1;
+
+    # print "DEBUG.removeExtraPP current line: " . $tmlout[$i];
+    # print "DEBUG.removeExtraPP next line: " . $tmlout[$nextline];
+    
+    # If current line is .PP
+    if ($tmlout[$i] =~    /\.PP/) { 
+        # print "DEBUG.removeExtraPP found .PP at line " . $i . "\n";
+
+        # If .PP is followed by another PP, remove it.
+        if ($tmlout[$nextline] =~    /\.PP/) {
+            # print "DEBUG.removeExtraPP next line has .PP too: " . $nextline . "\n";
+            splice @tmlout, $i, 1;
+            # print "DEBUG.RemoveExtraPP: tmlout[i] is now " . $tmlout[$i] . "\n";
+            # print "DEBUG.RemoveExtraPP: tmlout[nextline] is now " . $tmlout[$nextline] . "\n";
+            $i = $i-1;
+        }
+        # If .PP is followed by a BLOCKQUOTE remove it
+        elsif ($tmlout[$nextline] =~    /\.BLOCKQUOTE/) {
+            # print "DEBUG.removeExtraPP next line has .BLOCKQUOTE " . $nextline . "\n";
+            splice @tmlout, $i, 1;
+            # print "DEBUG.RemoveExtraPP: tmlout[i] is now " . $tmlout[$i] . "\n";
+            # print "DEBUG.RemoveExtraPP: tmlout[nextline] is now " . $tmlout[$nextline] . "\n";
+            $i = $i-1;
+        }
+        # If .PP is followed by QUOTE remove it
+        elsif ($tmlout[$nextline] =~    /\.QUOTE/) {
+            # print "DEBUG.removeExtraPP next line has .QUOTE " . $nextline . "\n";
+            splice @tmlout, $i, 1;
+            # print "DEBUG.RemoveExtraPP: tmlout[i] is now " . $tmlout[$i] . "\n";
+            # print "DEBUG.RemoveExtraPP: tmlout[nextline] is now " . $tmlout[$nextline] . "\n";
+            $i = $i-1;
+        }
+        elsif ($tmlout[$nextline] =~    /\.LIST/) {
+            # print "DEBUG.removeExtraPP next line has .LIST " . $nextline . "\n";
+            splice @tmlout, $i, 1;
+            # print "DEBUG.RemoveExtraPP: tmlout[i] is now " . $tmlout[$i] . "\n";
+            # print "DEBUG.RemoveExtraPP: tmlout[nextline] is now " . $tmlout[$nextline] . "\n";
+            $i = $i-1;
+        }
+        # If .PP is preceeded by .LIST OFF
+        elsif ($tmlout[$previousline] =~    /\.LIST OFF/) {
+            # print "DEBUG.removeExtraPP previous line has .LIST OFF " . $previousline . "\n";
+            splice @tmlout, $i, 1;
+            # print "DEBUG.RemoveExtraPP: tmlout[i] is now " . $tmlout[$i] . "\n";
+            # print "DEBUG.RemoveExtraPP: tmlout[nextline] is now " . $tmlout[$nextline] . "\n";
+            $i = $i-1;
+        }
+        # If .PP is folllowed by .CHAPTER remove it
+        elsif ($tmlout[$nextline] =~    /\.CHAPTER/) {
+            # print "DEBUG.removeExtraPP next line has .CHAPTER " . $nextline . "\n";
+            splice @tmlout, $i, 1;
+            # print "DEBUG.RemoveExtraPP: tmlout[i] is now " . $tmlout[$i] . "\n";
+            # print "DEBUG.RemoveExtraPP: tmlout[nextline] is now " . $tmlout[$nextline] . "\n";
+            $i = $i-1;
+        }
+        # If .PP is folllowed by a heading remove it
+        elsif ($tmlout[$nextline] =~    /\.HEADING/) {
+            # print "DEBUG.removeExtraPP next line has .HEADING " . $nextline . "\n";
+            splice @tmlout, $i, 1;
+            # print "DEBUG.RemoveExtraPP: tmlout[i] is now " . $tmlout[$i] . "\n";
+            # print "DEBUG.RemoveExtraPP: tmlout[nextline] is now " . $tmlout[$nextline] . "\n";
+            $i = $i-1;
+        }
+        # If .PP is folllowed by .EPIGRAPH remove it
+        elsif ($tmlout[$nextline] =~    /\.EPIGRAPH/) {
+            # print "DEBUG.removeExtraPP next line has .EPIGRAPH " . $nextline . "\n";
+            splice @tmlout, $i, 1;
+            # print "DEBUG.RemoveExtraPP: tmlout[i] is now " . $tmlout[$i] . "\n";
+            # print "DEBUG.RemoveExtraPP: tmlout[nextline] is now " . $tmlout[$nextline] . "\n";
+            $i = $i-1;
+        }
+        # If .PP is folllowed by .FOOTNOTE remove it
+        elsif ($tmlout[$nextline] =~    /\.FOOTNOTE/) {
+            # print "DEBUG.removeExtraPP next line has .EPIGRAPH " . $nextline . "\n";
+            splice @tmlout, $i, 1;
+            # print "DEBUG.RemoveExtraPP: tmlout[i] is now " . $tmlout[$i] . "\n";
+            # print "DEBUG.RemoveExtraPP: tmlout[nextline] is now " . $tmlout[$nextline] . "\n";
+            $i = $i-1;
+        }
+        # If .PP is preceeded by .FOOTNOTE OFF remove it
+        elsif ($tmlout[$nextline] =~    /\.FOOTNOTE OFF/) {
+            # print "DEBUG.removeExtraPP next line has .EPIGRAPH " . $nextline . "\n";
+            splice @tmlout, $i, 1;
+            # print "DEBUG.RemoveExtraPP: tmlout[i] is now " . $tmlout[$i] . "\n";
+            # print "DEBUG.RemoveExtraPP: tmlout[nextline] is now " . $tmlout[$nextline] . "\n";
+            $i = $i-1;
+        }
+        # If .PP is folllowed by .ENDNOTE remove it
+        elsif ($tmlout[$nextline] =~    /\.ENDNOTE/) {
+            # print "DEBUG.removeExtraPP next line has .EPIGRAPH " . $nextline . "\n";
+            splice @tmlout, $i, 1;
+            # print "DEBUG.RemoveExtraPP: tmlout[i] is now " . $tmlout[$i] . "\n";
+            # print "DEBUG.RemoveExtraPP: tmlout[nextline] is now " . $tmlout[$nextline] . "\n";
+            $i = $i-1;
+        }
+    }
+  }
 }
 
 #//////////////////////////
@@ -213,7 +342,7 @@ topcenter  =>  "TOP CENTER",
 $current +=1;
 
 push(@tmlout, "\.\n\.\\# Pagination Style #\n");
-print "DEBUG -> Entering paginationConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
+# print "DEBUG -> Entering paginationConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
 
 # Don't hyphenate page numbers by default
 push(@tmlout,   "\.PAGENUM_HYPHENS OFF\n"); 
@@ -252,7 +381,7 @@ for ( $i = $current; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $current = $i-1;
-        print "DEBUG -> Leaving paginationConfig(): current($current) line now: $tmlfile[$current]";
+        # print "DEBUG -> Leaving paginationConfig(): current($current) line now: $tmlfile[$current]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -271,7 +400,7 @@ my $title = "";
 $current +=1;
 
 push(@tmlout, "\.\n\.\\# Hyphenation Parameters #\n");
-print "DEBUG -> Entering hyphenationConfig(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering hyphenationConfig(): current($current) line now: $tmlfile[$current]";
 
 for ( $i = $current; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -289,7 +418,7 @@ for ( $i = $current; $i<100; $i++) {
         
         # Turn hyphenation on
         push(@tmlout,   "\.HY\n"); 
-        print "DEBUG -> Leaving hyphenationConfig(): current($current) line now: $tmlfile[$current]";
+        # print "DEBUG -> Leaving hyphenationConfig(): current($current) line now: $tmlfile[$current]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -340,7 +469,7 @@ for ($current = 0; $current < $#tmlout ; $current++){
   # Now we will split up the line by the [*] pattern.
   $currentline = $tmlout[$current];
   @templine = split /(\[\*\])/, $currentline;
-  foreach $line (@templine) {print "DEBUG-> FOOTNOTE ARRAY -> $line\n";}
+  #foreach $line (@templine) {print "DEBUG-> FOOTNOTE ARRAY -> $line\n";}
     
   # We split up the line by [*], so now we should have [*] as array items, should they exist
   for (my $i = 0; $i<100;$i++){
@@ -357,7 +486,7 @@ for ($current = 0; $current < $#tmlout ; $current++){
    
 }# endfor
   # Throw an error if there is a mismatching number of [*] and [footnote]
-  print "DEBUG -> fn_cnt: $fn_cnt, ftn_cnt: $ftn_cnt\n";
+  # print "DEBUG -> fn_cnt: $fn_cnt, ftn_cnt: $ftn_cnt\n";
   if ($fn_cnt ne $ftn_cnt) {print "ERROR -> the number of [*] and corresponding [footnote] don't match.\n"; exit;}
 }# endsub
 
@@ -393,7 +522,7 @@ justify =>  "JUSTIFY",
 $current+=1;
 
 push(@tmlout, "\.\\# Dropcap Style #\n");
-print "DEBUG -> Entering dropcapConfig(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering dropcapConfig(): current($current) line now: $tmlfile[$current]";
 
 for ( $i = $current; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -422,7 +551,7 @@ for ( $i = $current; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $current = $i-1;
-        print "DEBUG -> Leaving dropcapsConfig(): current($current) line now: $tmlfile[$current]";
+        # print "DEBUG -> Leaving dropcapsConfig(): current($current) line now: $tmlfile[$current]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -452,7 +581,7 @@ r     =>  "R",
 $toc_cnt+=1;
 
 push(@tmlout, "\.\n\.\\# TOC Entry Page Numbering Style #\n");
-print "DEBUG -> Entering tocPageNumberConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
+# print "DEBUG -> Entering tocPageNumberConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
 
 for ( $i = $toc_cnt; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -477,7 +606,7 @@ for ( $i = $toc_cnt; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $toc_cnt = $i-1;
-        print "DEBUG -> Leaving tocPageNumberConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
+        # print "DEBUG -> Leaving tocPageNumberConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -514,7 +643,7 @@ r     =>  "R",
 $toc_cnt+=1;
 
 push(@tmlout, "\.\n\.\\# TOC Entry Level $headingLevel Style #\n");
-print "DEBUG -> Entering tocEntryConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
+# print "DEBUG -> Entering tocEntryConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
 
 # Push the heading style level.
 push(@tmlout,   "\.TOC_ENTRY_TYLE $headingLevel");
@@ -556,7 +685,7 @@ for ( $i = $toc_cnt; $i<100; $i++) {
         
         #Update the current line counter to point to the last line where an option was found
         $toc_cnt = $i-1;
-        print "DEBUG -> Leaving tocTitleConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
+        # print "DEBUG -> Leaving tocTitleConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -592,7 +721,7 @@ justify =>  "JUSTIFY",
 $toc_cnt+=1;
 
 push(@tmlout, "\.\n\.\\# TOC Header Style #\n");
-print "DEBUG -> Entering tocHeaderConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
+# print "DEBUG -> Entering tocHeaderConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
 
 for ( $i = $toc_cnt; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -633,7 +762,7 @@ for ( $i = $toc_cnt; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $toc_cnt = $i-1;
-        print "DEBUG -> Leaving tocHeaderConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
+        # print "DEBUG -> Leaving tocHeaderConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -671,7 +800,7 @@ justify =>  "JUSTIFY",
 $toc_cnt+=1;
 
 push(@tmlout, "\.\n\.\\# TOC Title Style #\n");
-print "DEBUG -> Entering tocTitleConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
+# print "DEBUG -> Entering tocTitleConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
 
 # Push the heading style level.
 push(@tmlout,   "\.TOC_TITLE_STYLE");
@@ -713,7 +842,7 @@ for ( $i = $toc_cnt; $i<100; $i++) {
         
         #Update the current line counter to point to the last line where an option was found
         $toc_cnt = $i-1;
-        print "DEBUG -> Leaving tocTitleConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
+        # print "DEBUG -> Leaving tocTitleConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -751,7 +880,7 @@ none  =>  "\.TOC_PAGENUM_STYLE"
 $toc_cnt+=1;
 
 push(@tmlout, "\.\n\.\\# TOC General Style #\n");
-print "DEBUG -> Entering tocGeneralConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
+# print "DEBUG -> Entering tocGeneralConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
 
 for ( $i = $toc_cnt; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -792,7 +921,7 @@ for ( $i = $toc_cnt; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $toc_cnt = $i-1;
-        print "DEBUG -> Leaving tocGeneralConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
+        # print "DEBUG -> Leaving tocGeneralConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -810,11 +939,11 @@ my $title = "";
 # {contents} is of no interest to us, move to the next line to scan for options
 $current+=1;
 
-print "DEBUG -> Entering tocConfig(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering tocConfig(): current($current) line now: $tmlfile[$current]";
 
 for ( $toc_cnt = $current; $toc_cnt<100; $toc_cnt++) {
-    print "DEBUG -> tmlfile[$toc_cnt]: $tmlfile[$toc_cnt]";
-    print "DEBUG -> tmlfile[$current]: $tmlfile[$current]";
+    # print "DEBUG -> tmlfile[$toc_cnt]: $tmlfile[$toc_cnt]";
+    # print "DEBUG -> tmlfile[$current]: $tmlfile[$current]";
     # Will need to figure how to deal with the loop counters.
     # If #general
     if ($tmlfile[$toc_cnt] =~ /\s*#general\s*/) {
@@ -834,19 +963,19 @@ for ( $toc_cnt = $current; $toc_cnt<100; $toc_cnt++) {
     }
     #if #hx
     elsif ($tmlfile[$toc_cnt] =~ /\s*#h(.)\s*/){
-      print "Found #hx\n";
+      # print "DEBUG Found #hx\n";
       tocEntryConfig($1);
     }
     #if #entry-page-numbers
     elsif ($tmlfile[$toc_cnt] =~ /\s*#entry-page-numbers\s*/){
-      print "Found #page-numbers\n";
+      # print "DEBUG Found #page-numbers\n";
       tocPageNumberConfig();
       
     #Else there are no more options
     }else {
         #Update the current line counter to point to the last line where an option was found
         $current = $toc_cnt-1;
-        print "DEBUG -> Leaving tocConfig(): current($current) line now: $tmlfile[$current]";
+        # print "DEBUG -> Leaving tocConfig(): current($current) line now: $tmlfile[$current]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -859,7 +988,7 @@ for ( $toc_cnt = $current; $toc_cnt<100; $toc_cnt++) {
 # Later when we encounter [*], the text of the footnote will be substituted in place of [*].
 #*************************
 sub collectFootnote{
-print "DEBUG -> Entering COLLECT FOOTNOTES -> current line now ($current): $tmlfile[$current]";
+# print "DEBUG -> Entering COLLECT FOOTNOTES -> current line now ($current): $tmlfile[$current]";
 # [footnote] doesnt interest us, so move to the next line
 $current+=1;
 
@@ -878,7 +1007,7 @@ $fn_cnt += 1;
 
 # Move the current line pointer to [end]
 $current = $current + $i+1;
-print "DEBUG leaving COLLECT FOOTNOTES -> current line now ($current): $tmlfile[$current]";
+# print "DEBUG leaving COLLECT FOOTNOTES -> current line now ($current): $tmlfile[$current]";
 print "Collected these footnotes:\n";
 print "--------------------------\n";
 foreach $note (@footnotes) {print "\n.FOOTNOTE\n" . $note . ".FOOTNOTE END";}
@@ -913,7 +1042,7 @@ if ($tag eq "blockquote") {
     $templine =~ /^\[(.)\](.*\n)/;
     $dropcap_letter = $1;
     my $rest_of_line = $2;
-    print "DEBUG -> Rest of line is: $rest_of_line";
+    # print "DEBUG -> Rest of line is: $rest_of_line";
     
     # Lets create the dropcap command string and options, if they apply.
     my $dropcap_command = "\.DROPCAP " . $dropcap_letter;
@@ -1008,10 +1137,35 @@ if ($tag eq "blockquote") {
    collectFootnote();
    
 }elsif ($tag eq "paragraph") {
-    $tmlfile[$current] =~ s/(^\.s*)/\.PP\n/;
-    $tmlfile[$current] =~ s/(^\[s*p\s*\])/\.PP\n/;
-    $tmlfile[$current] =~ s/(^p>)/\.PP\n/;
-    $tmlfile[$current] =~ s/(^>s*)/\.PP\n/;
+
+    # .p This is a new paragraph
+    if ($tmlfile[$current] =~ /(^\.p\s*)/) {
+        $tmlfile[$current] =~ s/(^\.p\s*)/\.PP\n/;
+    }
+    # p This is a new paragraph
+    elsif ($tmlfile[$current] =~ /(^p\s)/) {
+        $tmlfile[$current] =~ s/(^p\s)/\.PP\n/;
+    }
+    # [p] This is a new paragraph
+    elsif ($tmlfile[$current] =~ /(^\[s*p\s*\])/) {
+        $tmlfile[$current] =~ s/(^\[s*p\s*\])/\.PP\n/;
+    }
+    # p> This is a new paragraph
+    elsif ($tmlfile[$current] =~ /(^p>)/) {
+        $tmlfile[$current] =~ s/(^p>)/\.PP\n/;
+    }
+    # > This is a new paragraph
+    elsif ($tmlfile[$current] =~ /(^>)/) {
+        $tmlfile[$current] =~ s/(^>)/\.PP\n/;
+    }
+    # > This is a new paragraph
+    elsif ($tmlfile[$current] =~ /(^>)/) {
+        $tmlfile[$current] =~ s/(^>)/\.PP\n/;
+    }
+    # ,,This is a new paragraph
+    elsif ($tmlfile[$current] =~ /(^,,)/) {
+        $tmlfile[$current] =~ s/(^,,)/\.PP\n/;
+    }
 
     push(@tmlout, $tmlfile[$current]);
     #push(@tmlout, "\.PP\n"); 
@@ -1056,7 +1210,7 @@ my $canAddItemSpacing = "";
     }
     
     %listOptions = getListOptions();
-    print "DEBUG -> ListOptions contains: " . %listOptions . "\n";
+    # print "DEBUG -> ListOptions contains: " . %listOptions . "\n";
     
  
     # If the list type is roman or ROMAN, we need to scan ahead to count how many items in list
@@ -1065,7 +1219,7 @@ my $canAddItemSpacing = "";
         # Just cycles through, counting -, * or @ , skipping any nested lists.
         $listLength = getListLength();
         $listLength = $list{"startValue"} + $listLength;
-        print "DEBUG -> List has $listLength items.\n";
+        # print "DEBUG -> List has $listLength items.\n";
     }
       
     # Create the list definiton string
@@ -1106,14 +1260,14 @@ my $canAddItemSpacing = "";
       # If we encounter [list], call recursively
       if ($tmlfile[$current] =~ /\[\s*list.*?\]/) {
         listTag();
-        print "DEBUG -> Have returned from nested list. Current at $tmlfile[$current]";
+        # print "DEBUG -> Have returned from nested list. Current at $tmlfile[$current]";
         $current +=1;
       }
       
       # If we encounter [end], reset options to global list config and return to calling sub
       if ($tmlfile[$current] =~ /\[\s*end\s*\]/) {
         #resetListOptions();
-        print "DEBUG -> Found [end], exiting listTag()\n";
+        # print "DEBUG -> Found [end], exiting listTag()\n";
         last;
       }
       
@@ -1124,7 +1278,7 @@ my $canAddItemSpacing = "";
         if ($listOptions{"itemSpacing"} and $canAddItemSpacing) {
           push(@tmlout, $listOptions{"itemSpacing"});
         }
-        print "DEBUG -> Item: $1\n";
+        # print "DEBUG -> Item: $1\n";
         # Push the item
         push(@tmlout, "\.ITEM\n$1\n");
         
@@ -1209,7 +1363,7 @@ my $last = 0;
     else {
         # Set the prefix
         $list{"prefix"} = $listOptions[0];     
-        print "DEBUG -> Found a prefix: " . $list{"prefix"} . "\n";
+        # print "DEBUG -> Found a prefix: " . $list{"prefix"} . "\n";
             
         # Remove the prefix from the list
         shift(@listOptions);
@@ -1229,7 +1383,7 @@ my $last = 0;
             
         # Set the enumerator
         $list{"enumerator"} = $listOptions[$last];
-        print "DEBUG -> Found an enumerator: " . $list{"enumerator"} . "\n";
+        # print "DEBUG -> Found an enumerator: " . $list{"enumerator"} . "\n";
 
         # Remove the enumerator from the list
         pop(@listOptions);
@@ -1264,7 +1418,7 @@ my $last = 0;
             }# ENDIF
                 
         }# ENDFOREACH
-        print "DEBUG -> List is ". $list{"type"} . " starting at " . $list{"startValue"} . "\n";
+        # print "DEBUG -> List is ". $list{"type"} . " starting at " . $list{"startValue"} . "\n";
     }#ENDIF $listOptions[0] =~ /[ixv]/i
         
     # IF however list is alphabetic
@@ -1309,7 +1463,7 @@ my $last = 0;
             if ($listOptions =~ /y/i) { $list{"startValue"} = 25;}
             if ($listOptions =~ /z/i) { $list{"startValue"} = 26;}                
         }       
-        print "DEBUG -> List is ". $list{"type"} . " starting at " . $list{"startValue"} . "\n";
+        # print "DEBUG -> List is ". $list{"type"} . " starting at " . $list{"startValue"} . "\n";
     }#ENDIF $listOptions[0] =~ /[a-z]/i
         
     # If list is numerical
@@ -1323,7 +1477,7 @@ my $last = 0;
         
         # Set the list start value
         $list{"startValue"} = $listOptions;
-        print "DEBUG -> List is ". $list{"type"} . " starting at " . $list{"startValue"} . "\n";    
+        # print "DEBUG -> List is ". $list{"type"} . " starting at " . $list{"startValue"} . "\n";    
     } #ENDIF $listOptions[0] =~ /[0-9]/     
     
     # Move the line pinter to the next line
@@ -1342,7 +1496,7 @@ sub coverOptions {
 my $i = 0;
 my $title = "";
     
-print "DEBUG -> Entering coverOptions(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering coverOptions(): current($current) line now: $tmlfile[$current]";
 
 for ( $i = $current; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -1370,7 +1524,7 @@ for ( $i = $current; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $current = $i-1;
-        print "DEBUG -> Leaving coverOptions(): current($current) line now: $tmlfile[$current]";
+        # print "DEBUG -> Leaving coverOptions(): current($current) line now: $tmlfile[$current]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -1384,7 +1538,7 @@ sub titleOptions {
 my $i = 0;
 my $title = "";
     
-print "DEBUG -> Entering titleOptions(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering titleOptions(): current($current) line now: $tmlfile[$current]";
 
 for ( $i = $current; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -1412,7 +1566,7 @@ for ( $i = $current; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $current = $i-1;
-        print "DEBUG -> Leaving titleOptions(): current($current) line now: $tmlfile[$current]";
+        # print "DEBUG -> Leaving titleOptions(): current($current) line now: $tmlfile[$current]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -1426,7 +1580,7 @@ sub copyrightOptions {
 my $i = 0;
 my $title = "";
     
-print "DEBUG -> Entering copyrightOptions(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering copyrightOptions(): current($current) line now: $tmlfile[$current]";
 
 for ( $i = $current; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -1454,7 +1608,7 @@ for ( $i = $current; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $current = $i-1;
-        print "DEBUG -> Leaving copyrightOptions(): current($current) line now: $tmlfile[$current]";
+        # print "DEBUG -> Leaving copyrightOptions(): current($current) line now: $tmlfile[$current]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -1468,7 +1622,7 @@ sub sectionOptions {
 my $i = 0;
 my $title = "";
     
-print "DEBUG -> Entering sectionOptions(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering sectionOptions(): current($current) line now: $tmlfile[$current]";
   
 for ( $i = $current; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -1495,7 +1649,7 @@ for ( $i = $current; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $current = $i-1;
-        print "DEBUG -> Leaving sectionOptions(): current($current) line now: $tmlfile[$current]";
+        # print "DEBUG -> Leaving sectionOptions(): current($current) line now: $tmlfile[$current]";
         push(@tmlout, "\.START\n");
         return;
    } #ENDIF
@@ -1511,7 +1665,7 @@ my $i = 0;
 my $title = "";
 
     
-print "DEBUG -> Entering chapterOptions(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering chapterOptions(): current($current) line now: $tmlfile[$current]";
 
 for ( $i = $current; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -1539,7 +1693,7 @@ for ( $i = $current; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $current = $i-1;
-        print "DEBUG -> Leaving chapterOptions(): current($current) line now: $tmlfile[$current]";
+        # print "DEBUG -> Leaving chapterOptions(): current($current) line now: $tmlfile[$current]";
         push(@tmlout, "\.START\n");
         return;
     }# ENDIF
@@ -1572,7 +1726,7 @@ justify =>  "JUSTIFY",
 );
 
 
-print "DEBUG -> Entering epigraphOptions(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering epigraphOptions(): current($current) line now: $tmlfile[$current]";
 
 for ( $i = $current; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -1599,7 +1753,7 @@ for ( $i = $current; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $current = $i-1;
-        print "DEBUG -> Leaving epigraphOptions(): current($current) line now: $tmlfile[$current]";
+        # print "DEBUG -> Leaving epigraphOptions(): current($current) line now: $tmlfile[$current]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -1632,7 +1786,7 @@ justify =>  "JUSTIFY",
 );
 
 
-print "DEBUG -> Entering epigraphBlockOptions(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering epigraphBlockOptions(): current($current) line now: $tmlfile[$current]";
 
 for ( $i = $current; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -1660,7 +1814,7 @@ for ( $i = $current; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $current = $i-1;
-        print "DEBUG -> Leaving epigraphBlockOptions(): current($current) line now: $tmlfile[$current]";
+        # print "DEBUG -> Leaving epigraphBlockOptions(): current($current) line now: $tmlfile[$current]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -1692,7 +1846,7 @@ justify =>  "JUSTIFY",
 );
 
     
-print "DEBUG -> Entering blockquoteOptions(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering blockquoteOptions(): current($current) line now: $tmlfile[$current]";
 
 for ( $i = $current; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -1720,7 +1874,7 @@ for ( $i = $current; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $current = $i-1;
-        print "DEBUG -> Leaving blockquoteOptions(): current($current) line now: $tmlfile[$current]";
+        # print "DEBUG -> Leaving blockquoteOptions(): current($current) line now: $tmlfile[$current]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -1751,7 +1905,7 @@ center  =>  "CENTER",
 justify =>  "JUSTIFY",
 );
     
-print "DEBUG -> Entering quoteOptions(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering quoteOptions(): current($current) line now: $tmlfile[$current]";
 
 for ( $i = $current; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -1779,7 +1933,7 @@ for ( $i = $current; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $current = $i-1;
-        print "DEBUG -> Leaving quoteOptions(): current($current) line now: $tmlfile[$current]";
+        # print "DEBUG -> Leaving quoteOptions(): current($current) line now: $tmlfile[$current]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -1812,7 +1966,7 @@ my %listOptions = (
   exist => "",
 );
 
-print "DEBUG -> Entering listOptions(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering listOptions(): current($current) line now: $tmlfile[$current]";
 
 for ( $i = $current; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -1853,7 +2007,7 @@ for ( $i = $current; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $current = $i;
-        print "DEBUG -> Leaving listOptions(): current($current) line now: $tmlfile[$current]";
+        # print "DEBUG -> Leaving listOptions(): current($current) line now: $tmlfile[$current]";
         return %listOptions;
     }# ENDIF
 }# ENDFOR
@@ -1887,7 +2041,7 @@ my %listOptions = (
   exist => "",
 );
 
-print "DEBUG -> Entering listConfig(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering listConfig(): current($current) line now: $tmlfile[$current]";
 
 for ( $i = $current; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -1928,7 +2082,7 @@ for ( $i = $current; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $current = $i;
-        print "DEBUG -> Leaving listConfig(): current($current) line now: $tmlfile[$current]";
+        # print "DEBUG -> Leaving listConfig(): current($current) line now: $tmlfile[$current]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -1971,7 +2125,7 @@ if ($tmlfile[$current] =~ /\[\s*introduction\s*\]/) {
     #Move line pointer to next line
     $current+=1;
 }
-    print "DEBUG -> Leaving introduction() with current ($current), $tmlfile[$current]";
+    # print "DEBUG -> Leaving introduction() with current ($current), $tmlfile[$current]";
 }# ENDSUB
 
 
@@ -2011,7 +2165,7 @@ if ($tmlfile[$current] =~ /\[\s*preface\s*\]/) {
     #Move line pointer to next line
     $current+=1;
 }
-    print "DEBUG -> Leaving preface() with current ($current), $tmlfile[$current]";
+    # print "DEBUG -> Leaving preface() with current ($current), $tmlfile[$current]";
 }# ENDSUB
 
 #//////////////////////////
@@ -2050,7 +2204,7 @@ if ($tmlfile[$current] =~ /\[\s*foreword\s*\]/) {
     #Move line pointer to next line
     $current+=1;
 }
-    print "DEBUG -> Leaving foreword() with current ($current), $tmlfile[$current]";
+    # print "DEBUG -> Leaving foreword() with current ($current), $tmlfile[$current]";
 }# ENDSUB
 
 #//////////////////////////
@@ -2089,7 +2243,7 @@ if ($tmlfile[$current] =~ /\[\s*acknowledgements\s*\]/) {
     #Move line pointer to next line
     $current+=1;
 }
-    print "DEBUG -> Leaving acknowledgements() with current ($current), $tmlfile[$current]";
+    # print "DEBUG -> Leaving acknowledgements() with current ($current), $tmlfile[$current]";
 }# ENDSUB
 
 #//////////////////////////
@@ -2222,7 +2376,7 @@ elsif ($tmlfile[$current] =~ /\[\s*section(.*?)\s*\]\s*\n/) {
     }
     $current+=1;
 }# ENDIF
-    print "DEBUG -> Leaving sectionTitle() with current ($current), $tmlfile[$current]";
+    # print "DEBUG -> Leaving sectionTitle() with current ($current), $tmlfile[$current]";
 }# ENDSUB
 
 
@@ -2236,7 +2390,7 @@ my $link ="none";
 my $chapter_number="none";
 my $section_number="none";
     
-print "Entered chapterTitle() with current ($current), $tmlfile[$current]";
+# print "DEBUG Entered chapterTitle() with current ($current), $tmlfile[$current]";
 
 #If [chapter number:link]
 if ($tmlfile[$current] =~ /\[chapter\s+(.+):\s*(.+)\s*\]/){
@@ -2358,7 +2512,7 @@ elsif ($tmlfile[$current] =~ /\[\s*chapter(.*?)\s*\]\s*\n/) {
     }
     $current+=1;
 }# ENDIF    
-    print "DEBUG -> Leaving chapterTitle() with current ($current), $tmlfile[$current]";
+    # print "DEBUG -> Leaving chapterTitle() with current ($current), $tmlfile[$current]";
 }# ENDSUB
 
 #//////////////////////////
@@ -2373,7 +2527,7 @@ my $parahead="none";
 my $headingString = "";
 my $isParahead ="";
     
-print "DEBUG -> Entered headingTitle() with current ($current), $tmlfile[$current]";
+# print "DEBUG -> Entered headingTitle() with current ($current), $tmlfile[$current]";
 
 # If [heading: link]
 if ($tmlfile[$current] =~ /\[\s*h(.)\s*:\s*(.+)\s*\]/ ) {
@@ -2412,7 +2566,7 @@ if ($tmlfile[$current] =~ /\[\s*h(.)\s*\]\s*(.+)\s*/) {
     if ($link) { $headingString = $headingString . " $link ";}
     $headingString = $headingString . " " . $title;
     
-    print "DEBUG ->Heading string is $headingString";
+    # print "DEBUG ->Heading string is $headingString";
     
     push(@tmlout,  $headingString);
             
@@ -2495,8 +2649,8 @@ elsif ($tmlfile[$current] =~ /\[\s*h(.*?)\s*\]\s*\n/) {
   # We need to keep track of the heading level for use in [parahead]
   $currentHeadingLevel = $headingLevel;
   $current-=1;
-  print "DEBUG -> in headingTitle, heading level is $currentHeadingLevel\n";
-  print "DEBUG -> Leaving headingTitle() with current ($current), $tmlfile[$current]";
+  # print "DEBUG -> in headingTitle, heading level is $currentHeadingLevel\n";
+  # print "DEBUG -> Leaving headingTitle() with current ($current), $tmlfile[$current]";
 }# ENDSUB
 
 #//////////////////////////
@@ -2511,8 +2665,8 @@ my $parahead="none";
 my $headingString = "";
 my $isParahead ="";
     
-print "DEBUG -> Entered paraheadTitle() with current ($current), $tmlfile[$current]";
-print "DEBUG -> in paraheadTitle, heading level is $currentHeadingLevel\n";
+# print "DEBUG -> Entered paraheadTitle() with current ($current), $tmlfile[$current]";
+# print "DEBUG -> in paraheadTitle, heading level is $currentHeadingLevel\n";
 
 $currentHeadingLevel = $currentHeadingLevel + 1;
 
@@ -2549,13 +2703,13 @@ push(@tmlout, $headingString);
 $tmlfile[$current] =~ s/\[ph(.+)\]//;
 
 $needToResetHeadingStyle[$currentHeadingLevel] = "yes";
-print "DEBUG -> in paraheadTitle, will need to reset heading style $currentHeadingLevel\n";
+# print "DEBUG -> in paraheadTitle, will need to reset heading style $currentHeadingLevel\n";
 
 $currentHeadingLevel = "";
 
 # Will have to figure out what to do with the line.
 $current+=1;
-    print "DEBUG -> Leaving paraheadTitle() with current ($current), $tmlfile[$current]";
+    # print "DEBUG -> Leaving paraheadTitle() with current ($current), $tmlfile[$current]";
 }# ENDSUB
 
 
@@ -2571,7 +2725,7 @@ my $title = "";
 $current+=1;
 
 push(@tmlout, "\.\\# Document Style and Metadata #\n");
-print "DEBUG -> Entering documentConfig(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering documentConfig(): current($current) line now: $tmlfile[$current]";
 
 for ( $i = $current; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -2608,7 +2762,7 @@ for ( $i = $current; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $current = $i-1;
-        print "DEBUG -> Leaving documentConfig(): current($current) line now: $tmlfile[$current]";
+        # print "DEBUG -> Leaving documentConfig(): current($current) line now: $tmlfile[$current]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -2644,7 +2798,7 @@ b5=> "\.PAPER B5",
 $current+=1;
 
 push(@tmlout, "\.\\# Page Style #\n");
-print "DEBUG -> Entering pageConfig(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering pageConfig(): current($current) line now: $tmlfile[$current]";
 
 for ( $i = $current; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -2680,7 +2834,7 @@ for ( $i = $current; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $current = $i-1;
-        print "DEBUG -> Leaving pageConfig(): current($current) line now: $tmlfile[$current]";
+        # print "DEBUG -> Leaving pageConfig(): current($current) line now: $tmlfile[$current]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -2708,7 +2862,7 @@ r     =>  "R",
 $toc_cnt+=1;
 
 push(@tmlout, "\.\n\.\\# General Header Style #\n");
-print "DEBUG -> Entering generalHeaderConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
+# print "DEBUG -> Entering generalHeaderConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
 
 for ( $i = $toc_cnt; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -2734,7 +2888,7 @@ for ( $i = $toc_cnt; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $toc_cnt = $i-1;
-        print "DEBUG -> Leaving generalHeaderConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
+        # print "DEBUG -> Leaving generalHeaderConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -2762,7 +2916,7 @@ r     =>  "R",
 $toc_cnt+=1;
 
 push(@tmlout, "\.\n\.\\# Left Header Style #\n");
-print "DEBUG -> Entering leftHeaderConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
+# print "DEBUG -> Entering leftHeaderConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
 
 for ( $i = $toc_cnt; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -2794,7 +2948,7 @@ for ( $i = $toc_cnt; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $toc_cnt = $i-1;
-        print "DEBUG -> Leaving leftHeaderConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
+        # print "DEBUG -> Leaving leftHeaderConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -2822,7 +2976,7 @@ r     =>  "R",
 $toc_cnt+=1;
 
 push(@tmlout, "\.\n\.\\# Right Header Style #\n");
-print "DEBUG -> Entering rightHeaderConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
+# print "DEBUG -> Entering rightHeaderConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
 
 for ( $i = $toc_cnt; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -2854,7 +3008,7 @@ for ( $i = $toc_cnt; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $toc_cnt = $i-1;
-        print "DEBUG -> Leaving rightHeaderConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
+        # print "DEBUG -> Leaving rightHeaderConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -2882,7 +3036,7 @@ r     =>  "R",
 $toc_cnt+=1;
 
 push(@tmlout, "\.\n\.\\# Center Header Style #\n");
-print "DEBUG -> Entering centerHeaderConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
+# print "DEBUG -> Entering centerHeaderConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
 
 for ( $i = $toc_cnt; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -2914,7 +3068,7 @@ for ( $i = $toc_cnt; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $toc_cnt = $i-1;
-        print "DEBUG -> Leaving centerHeaderConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
+        # print "DEBUG -> Leaving centerHeaderConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -2943,7 +3097,7 @@ r     =>  "R",
 $toc_cnt+=1;
 
 push(@tmlout, "\.\n\.\\# Header Rule Style #\n");
-print "DEBUG -> Entering headerRuleConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
+# print "DEBUG -> Entering headerRuleConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
 
 for ( $i = $toc_cnt; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -2971,7 +3125,7 @@ for ( $i = $toc_cnt; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $toc_cnt = $i-1;
-        print "DEBUG -> Leaving headerRuleHeaderConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
+        # print "DEBUG -> Leaving headerRuleHeaderConfig(): current($toc_cnt) line now: $tmlfile[$toc_cnt]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -2990,11 +3144,11 @@ my $title = "";
 # {contents} is of no interest to us, move to the next line to scan for options
 $current+=1;
 
-print "DEBUG -> Entering headerConfig(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering headerConfig(): current($current) line now: $tmlfile[$current]";
 
 for ( $toc_cnt = $current; $toc_cnt<100; $toc_cnt++) {
-    print "DEBUG -> tmlfile[$toc_cnt]: $tmlfile[$toc_cnt]";
-    print "DEBUG -> tmlfile[$current]: $tmlfile[$current]";
+    # print "DEBUG -> tmlfile[$toc_cnt]: $tmlfile[$toc_cnt]";
+    # print "DEBUG -> tmlfile[$current]: $tmlfile[$current]";
     # Will need to figure how to deal with the loop counters.
     # If #general
     if ($tmlfile[$toc_cnt] =~ /\s*#general\s*/) {
@@ -3014,19 +3168,19 @@ for ( $toc_cnt = $current; $toc_cnt<100; $toc_cnt++) {
     }
     #if #hx
     elsif ($tmlfile[$toc_cnt] =~ /\s*#center\s*/){
-      print "Found #hx\n";
+      # print "DEBUG Found #hx\n";
       centerHeaderConfig($1);
     }
     #if #entry-page-numbers
     elsif ($tmlfile[$toc_cnt] =~ /\s*#rule\s*/){
-      print "Found #page-numbers\n";
+      # print "DEBUG Found #page-numbers\n";
       headerRuleConfig();
       
     #Else there are no more options
     }else {
         #Update the current line counter to point to the last line where an option was found
         $current = $toc_cnt-1;
-        print "DEBUG -> Leaving headerConfig(): current($current) line now: $tmlfile[$current]";
+        # print "DEBUG -> Leaving headerConfig(): current($current) line now: $tmlfile[$current]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -3045,7 +3199,7 @@ my $title = "";
 $current+=1;
 
 push(@tmlout, "\.\\# Margin Style #\n");
-print "DEBUG -> Entering marginConfig(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering marginConfig(): current($current) line now: $tmlfile[$current]";
 
 for ( $i = $current; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -3070,7 +3224,7 @@ for ( $i = $current; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $current = $i-1;
-        print "DEBUG -> Leaving marginConfig(): current($current) line now: $tmlfile[$current]";
+        # print "DEBUG -> Leaving marginConfig(): current($current) line now: $tmlfile[$current]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -3101,15 +3255,42 @@ center  =>  "CENTER",
 justify =>  "JUSTIFY",
 );
 
-# {document} is of no interest to us, move to the next line to scan for options
+# A couple of flags to identify if we are processing options under #chapter-number or #title
+$chapterNumber = undef;
+$chapterTitle = undef;
+
+# {chapter-headings} is of no interest to us, move to the next line to scan for options
 $current+=1;
 
 push(@tmlout, "\.\\# Chapter Style #\n");
-print "DEBUG -> Entering chapterConfig(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering chapterConfig(): current($current) line now: $tmlfile[$current]";
 
 for ( $i = $current; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
-    if ($tmlfile[$i] =~ /\s*(.+):\s*(.+)\s*/) {
+    
+    # If #chapter-number
+    if ($tmlfile[$i] =~ /\s*#number\s*/) {
+
+        # Toggle so that only 1 flag is turned on at any given time.
+        if ($chapterTitle == 1) {
+            $chapterTitle = undef;
+        }
+
+        #Turn the flag on
+        $chapterNumber = 1;
+
+    # If #title
+    }elsif ($tmlfile[$i] =~ /\s*#title\s*/) {
+
+        # Toggle so that only 1 flag is turned on at any given time.
+        if ($chapterNumber == 1) {
+            $chapterNumber = undef;
+        }
+
+        #Turn the flag on
+        $chapterTitle = 1
+
+    }elsif ($tmlfile[$i] =~ /\s*(.+):\s*(.+)\s*/) {
         if ($1 eq "title") {
             #Get the title(s), remove \n and spaces.
             $title = $2;chomp($title);trim($title);
@@ -3120,14 +3301,26 @@ for ( $i = $current; $i<100; $i++) {
             #If Only one Title
             elsif ($title =~ /(.+)/){$title = "\.TITLE \"$1\"\n"; }
                 push(@tmlout,  $title);
+
+        # If string:
         }elsif ($1 eq "string") {push(@tmlout,   "\.CHAPTER_STRING \"$2\"\n");
-        }elsif ($1 eq "family") {push(@tmlout,   "\.CHAPTER_FAMILY $2\n");
-        }elsif ($1 eq "font") {push(@tmlout,   "\.CHAPTER_FONT $font{$2}\n");
-        }elsif ($1 eq "quad") {push(@tmlout,   "\.CHAPTER_QUAD $quad{$2}\n");
-        }elsif ($1 eq "title-family") {push(@tmlout,   "\.CHAPTER_TITLE_FAMILY $2\n");
-        }elsif ($1 eq "title-font") {push(@tmlout,   "\.CHAPTER_TITLE_FONT $font{$2}\n");
-        }elsif ($1 eq "title-quad") {push(@tmlout,   "\.CHAPTER_TITLE_QUAD $quad{$2}\n");
-        }else {$error_line = $i+1;die("ERROR on line [$error_line] -> \'$1\' is not a valid option for {chapters}\n");}
+        
+        # If family:
+        }elsif ($1 eq "family") {
+            if ($chapterNumber) {push(@tmlout,   "\.CHAPTER_FAMILY $2\n");}
+            if ($chapterTitle)  {push(@tmlout,   "\.CHAPTER_TITLE_FAMILY $2\n");}
+            
+        # IF font:
+        }elsif ($1 eq "font") {
+            if ($chapterNumber) {push(@tmlout,   "\.CHAPTER_FONT $font{$2}\n");}
+            if ($chapterTitle)  {push(@tmlout,   "\.CHAPTER_TITLE_FONT $font{$2}\n");}
+
+        # If quad:
+        }elsif ($1 eq "quad") {
+            if ($chapterNumber) {push(@tmlout,   "\.CHAPTER_QUAD $quad{$2}\n");}
+            if ($chapterTitle)  {push(@tmlout,   "\.CHAPTER_TITLE_QUAD $quad{$2}\n");}
+            
+        }else {$error_line = $i+1;die("ERROR on line [$error_line] -> \'$1\' is not a valid option for {chapter-headings}\n");}
 
     # Options with no args
     }elsif ($tmlfile[$i] =~ /\s*start-on-odd-pages\s*/) {
@@ -3137,7 +3330,7 @@ for ( $i = $current; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $current = $i-1;
-        print "DEBUG -> Leaving chapterConfig(): current($current) line now: $tmlfile[$current]";
+        # print "DEBUG -> Leaving chapterConfig(): current($current) line now: $tmlfile[$current]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -3176,7 +3369,7 @@ justify =>  "JUSTIFY",
 $current+=1;
 
 push(@tmlout, "\.\\# Heading $headingLevel Style #\n");
-print "DEBUG -> Entering headingConfig(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering headingConfig(): current($current) line now: $tmlfile[$current]";
 
 # Push the heading style level.
 push(@tmlout,   "\.HEADING_STYLE $headingLevel");
@@ -3234,7 +3427,7 @@ for ( $i = $current; $i<100; $i++) {
         
         #Update the current line counter to point to the last line where an option was found
         $current = $i-1;
-        print "DEBUG -> Leaving headingConfig(): current($current) line now: $tmlfile[$current]";
+        # print "DEBUG -> Leaving headingConfig(): current($current) line now: $tmlfile[$current]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -3269,7 +3462,7 @@ justify =>  "JUSTIFY",
 # {document} is of no interest to us, move to the next line to scan for options
 $current+=1;
 
-print "DEBUG -> Entering paraheadConfig(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering paraheadConfig(): current($current) line now: $tmlfile[$current]";
 
 for ( $i = $current; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -3321,7 +3514,7 @@ for ( $i = $current; $i<100; $i++) {
         
         #Update the current line counter to point to the last line where an option was found
         $current = $i-1;
-        print "DEBUG -> Leaving paraheadConfig(): current($current) line now: $tmlfile[$current]";
+        # print "DEBUG -> Leaving paraheadConfig(): current($current) line now: $tmlfile[$current]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -3360,7 +3553,7 @@ justify =>  "JUSTIFY",
 $current+=1;
 
 push(@tmlout, "\.\\# Epigraph Style #\n");
-print "DEBUG -> Entering epigraphConfig(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering epigraphConfig(): current($current) line now: $tmlfile[$current]";
 
 for ( $i = $current; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -3386,7 +3579,7 @@ for ( $i = $current; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $current = $i-1;
-        print "DEBUG -> Leaving epigraphConfig(): current($current) line now: $tmlfile[$current]";
+        # print "DEBUG -> Leaving epigraphConfig(): current($current) line now: $tmlfile[$current]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -3421,7 +3614,7 @@ justify =>  "JUSTIFY",
 $current+=1;
 
 push(@tmlout, "\.\\# Epigraph Block Style #\n");
-print "DEBUG -> Entering epigraphblockConfig(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering epigraphblockConfig(): current($current) line now: $tmlfile[$current]";
 
 for ( $i = $current; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -3448,7 +3641,7 @@ for ( $i = $current; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $current = $i-1;
-        print "DEBUG -> Leaving epigraphblockConfig(): current($current) line now: $tmlfile[$current]";
+        # print "DEBUG -> Leaving epigraphblockConfig(): current($current) line now: $tmlfile[$current]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -3483,7 +3676,7 @@ justify =>  "JUSTIFY",
 $current+=1;
 
 push(@tmlout, "\.\\# Blockquote Style #\n");
-print "DEBUG -> Entering blockquoteConfig(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering blockquoteConfig(): current($current) line now: $tmlfile[$current]";
 
 for ( $i = $current; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -3512,7 +3705,7 @@ for ( $i = $current; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $current = $i-1;
-        print "DEBUG -> Leaving blockquoteConfig(): current($current) line now: $tmlfile[$current]";
+        # print "DEBUG -> Leaving blockquoteConfig(): current($current) line now: $tmlfile[$current]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -3547,7 +3740,7 @@ justify =>  "JUSTIFY",
 $current+=1;
 
 push(@tmlout, "\.\\# Quote Style #\n");
-print "DEBUG -> Entering quoteConfig(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering quoteConfig(): current($current) line now: $tmlfile[$current]";
 
 for ( $i = $current; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -3576,7 +3769,7 @@ for ( $i = $current; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $current = $i-1;
-        print "DEBUG -> Leaving quoteConfig(): current($current) line now: $tmlfile[$current]";
+        # print "DEBUG -> Leaving quoteConfig(): current($current) line now: $tmlfile[$current]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -3617,7 +3810,7 @@ number   =>  "NUMBER",
 $current+=1;
 
 push(@tmlout, "\.\\# Footnote Style #\n");
-print "DEBUG -> Entering footnoteConfig(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering footnoteConfig(): current($current) line now: $tmlfile[$current]";
 
 for ( $i = $current; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -3656,7 +3849,7 @@ for ( $i = $current; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $current = $i-1;
-        print "DEBUG -> Leaving footnoteConfig(): current($current) line now: $tmlfile[$current]";
+        # print "DEBUG -> Leaving footnoteConfig(): current($current) line now: $tmlfile[$current]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -3674,7 +3867,7 @@ my $title = "";
 $current+=1;
 
 push(@tmlout, "\.\\# Paragraph Style #\n");
-print "DEBUG -> Entering paragraphConfig(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering paragraphConfig(): current($current) line now: $tmlfile[$current]";
 
 for ( $i = $current; $i<100; $i++) {
     #print "tmlfile[$i]: $tmlfile[$i]";
@@ -3700,7 +3893,7 @@ for ( $i = $current; $i<100; $i++) {
     }else {
         #Update the current line counter to point to the last line where an option was found
         $current = $i-1;
-        print "DEBUG -> Leaving paragraphConfig(): current($current) line now: $tmlfile[$current]";
+        # print "DEBUG -> Leaving paragraphConfig(): current($current) line now: $tmlfile[$current]";
         return;
     }# ENDIF
 }# ENDFOR
@@ -3714,7 +3907,7 @@ for ( $i = $current; $i<100; $i++) {
 sub aliases {
 $j=0;
 
-print "DEBUG -> Entering aliasConfig(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering aliasConfig(): current($current) line now: $tmlfile[$current]";
 
 # Move to line after {aliases}
 $current+=1;
@@ -3733,7 +3926,7 @@ for ($i=$current;$i<100;$i++){
 # Move the pointer to the last alias = synonym
 $current = $i;
 
-print "DEBUG -> Going to scan for aliases...: current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Going to scan for aliases...: current($current) line now: $tmlfile[$current]";
 
 # For each line in the input file...
 for ($i=$current;$i<$#tmlfile+1; $i++) {
@@ -3751,7 +3944,7 @@ for ($i=$current;$i<$#tmlfile+1; $i++) {
         }# ENDIF
     }# ENDFOR
 }# ENDFOR
-print "DEBUG -> Leaving aliasConfig(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Leaving aliasConfig(): current($current) line now: $tmlfile[$current]";
 }# ENDSUB
 
 #//////////////////////////
@@ -3761,7 +3954,7 @@ print "DEBUG -> Leaving aliasConfig(): current($current) line now: $tmlfile[$cur
 sub strings {
 $j=0;
 
-print "DEBUG -> Entering strings(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering strings(): current($current) line now: $tmlfile[$current]";
 
 # Move to line after {strings}
 $current+=1;
@@ -3771,7 +3964,7 @@ for ($i=$current;$i<100;$i++){
     if ($tmlfile[$i] =~ /(.+[^\s])\s*=\s*(.+)/){
         $string[$j]= trim($1);
         $expanded_string[$j]= trim($2);
-        print "DEBUG -> string $string[$j] will expand to $expanded_string[$j]\n";
+        # print "DEBUG -> string $string[$j] will expand to $expanded_string[$j]\n";
         $j+=1;
     }else {
         last;
@@ -3781,7 +3974,7 @@ for ($i=$current;$i<100;$i++){
 # Move the pointer to the last string = synonym
 $current = $i;
 
-print "DEBUG -> Going to scan for string...: current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Going to scan for string...: current($current) line now: $tmlfile[$current]";
 
 # For each line in the input file...
 for ($i=$current;$i<$#tmlfile+1; $i++) {
@@ -3791,15 +3984,15 @@ for ($i=$current;$i<$#tmlfile+1; $i++) {
     
         # The regex to match anywhere in the current line
         $re_alias = $string[$j];
-        print "DEBUG -> scanning for \"$string[$j]\"\n";
+        # print "DEBUG -> scanning for \"$string[$j]\"\n";
         
         # Do the substitution
         $re_synonym = $expanded_string[$j];
-        print "DEBUG -> Replacing $re_alias with \"$re_synonym\"\n";
+        # print "DEBUG -> Replacing $re_alias with \"$re_synonym\"\n";
         $tmlfile[$i] =~ s/$re_alias/$re_synonym/g;
     }# ENDFOR
 }# ENDFOR
-print "DEBUG -> Leaving strings(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Leaving strings(): current($current) line now: $tmlfile[$current]";
 }# ENDSUB
 
 
@@ -3813,7 +4006,7 @@ sub include {
 $j=0;
 my @allFiles;
 
-print "DEBUG -> Entering include(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Entering include(): current($current) line now: $tmlfile[$current]";
 
 # Move to line after {include}
 $current+=1;
@@ -3852,7 +4045,7 @@ pop(@allFiles);
 # Insert the included files into the main tmlfile
 splice(@tmlfile, $current, 0, @allFiles);
 
-print "DEBUG -> Leaving include(): current($current) line now: $tmlfile[$current]";
+# print "DEBUG -> Leaving include(): current($current) line now: $tmlfile[$current]";
 
 # Backup the line pointer since it will be incremented in the next loop iteration
 $current-=1;
@@ -3866,11 +4059,11 @@ $current-=1;
 # KERNING CONFIG
 #**************************
 sub kerningConfig {
-  print "DEBUG -> Entering kerningConfig()...\n";
+  # print "DEBUG -> Entering kerningConfig()...\n";
   #{kerning:on|off}
   if ($tmlfile[$current] =~ /{\s*kerning:\s*on\s*}/)  {push(@tmlout, "\.KERN\n");}
   if ($tmlfile[$current] =~ /{\s*kerning:\s*off\s*}/) {push(@tmlout, "\.KERN OFF\n");}
-  print "DEBUG -> Leaving kerningConfig()...\n";
+  # print "DEBUG -> Leaving kerningConfig()...\n";
 }#ENDSUB
 
 
@@ -3879,11 +4072,11 @@ sub kerningConfig {
 # LIGATURE CONFIG
 #**************************
 sub ligatureConfig {
-  print "DEBUG -> Entering ligatureConfig()...\n";
+  # print "DEBUG -> Entering ligatureConfig()...\n";
   #{kerning:on|off}
   if ($tmlfile[$current] =~ /{\s*ligatures:\s*on\s*}/)  {push(@tmlout, "\.LIG\n");}
   if ($tmlfile[$current] =~ /{\s*ligatures:\s*off\s*}/) {push(@tmlout, "\.LIG OFF\n");}
-  print "DEBUG -> Leaving ligatureConfig()...\n";
+  # print "DEBUG -> Leaving ligatureConfig()...\n";
 }#ENDSUB
 
 #//////////////////////////
