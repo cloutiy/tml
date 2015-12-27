@@ -7,20 +7,19 @@ indent-first-paragraphs
 [T]here was once....
 
 [chapter 1] Windows
-p> Do all the witches fly on brooms?
+> Do all the witches <i<fly> on <size 12, bold<brooms>?
 
 [blockquote]
 Better to burn than to fade away.
 [end]
 
-[p] This is what Kurt Cobain was famous for.
+p This is what Kurt Cobain was famous for.
 
-> Why not Not come as you are, as you were?
+.p Why not Not come as you are, as you were?
 
-[p] As you want me to be
+,,As you want me to be
 
 [h2] The 90's
-[p] While all of the rock gurus got ready for hell.
-
+While all of the rock gurus got ready for hell.
 
 
