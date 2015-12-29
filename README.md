@@ -2,6 +2,8 @@ The Typesetting Markup Language
 ===============================
 *TML v0.1.7*
 
+**Please see WIKI for comprehensive documentation**
+
 TML is an attempt to create a typesetting language that is simple, elegant and easy to understand and use.
 
 The current implementation targets **groff** as the target output, which can then be used to generate professional quality postscipt and PDF documents.
@@ -13,6 +15,8 @@ Although usable, it is still a proof of concept, an experiment and an attempt to
 ## Samples
 As a starting point, I recommend you have a look at the `tests` folder to see examples of what TML markup looks like.
 Examples of complete works typeset using `TML`, or a combination of `TML` and `groff` will be added shortly.
+
+**Please see WIKI for comprehensive documentation**
 
 ## How do I use it?
 
