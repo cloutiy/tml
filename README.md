@@ -10,7 +10,7 @@ The current implementation targets **groff** as the target output, which can the
 
 Groffers will rejoice in knowing that since **groff** is under the hood, you may also include groff code in TML documents. The parser will simply pass over and include them in the generated output.  Note however the current implementation depends heavilty on Peter Schaffter's **MOM macros**.
 
-Although usable, it is still a proof of concept, an experiment and an attempt to attract more users to the world of `groff.`  After more than a year of secrecy, Peter and I thought it was time to share with other what we had been up to, and how an elegant markup could help make things easier for new users.
+Although usable, it is still a proof of concept, an experiment and an attempt to attract more users to the world of `groff.`  After more than a year of secrecy, Peter and I thought it was time to share with other what we had been up to, and how an elegant typesetting groff could be.
 
 ## Samples
 As a starting point, I recommend you have a look at the `tests` folder to see examples of what TML markup looks like.
